@@ -1,5 +1,6 @@
 package com.maen.vlogwebserviceserver.domain.posts;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +19,20 @@ public class Posts {
     private Long userId;
 
     @Column(nullable = false)
-    private String videoPath;
+    private String videoName;
 
     private String description;
 
     private int views;
 
+
+    @Builder
+    public Posts(Long userId, String videoName, String description){
+        this.userId = userId;
+        this.videoName = videoName;
+        this.description = description;
+        this.views = 0;
+    }
 
 
 }

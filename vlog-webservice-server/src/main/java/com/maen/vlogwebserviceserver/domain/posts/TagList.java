@@ -1,6 +1,7 @@
 package com.maen.vlogwebserviceserver.domain.posts;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,14 @@ public class TagList {
 
     @Column(nullable = false)
     private Long tagsId;
+
+
+    @Builder
+    public TagList(Long postsId, Long tagsId){
+        this.postsId = postsId;
+        this.tagsId = tagsId;
+    }
+
 
 
 }

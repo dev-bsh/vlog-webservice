@@ -1,5 +1,6 @@
 package com.maen.vlogwebserviceserver.domain.posts;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,13 @@ public class PostsLike {
 
     @Column(nullable = false)
     private Long postsId;
+
+
+    @Builder
+    public PostsLike(Long userId, Long postsId){
+        this.userId = userId;
+        this.postsId = postsId;
+    }
 
 
 }

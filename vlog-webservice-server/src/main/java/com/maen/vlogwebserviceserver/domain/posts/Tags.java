@@ -1,5 +1,6 @@
 package com.maen.vlogwebserviceserver.domain.posts;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,5 +18,10 @@ public class Tags {
     @Column(nullable = false)
     private String content;
 
+
+    @Builder
+    public Tags(String content){
+        this.content = content;
+    }
 
 }
