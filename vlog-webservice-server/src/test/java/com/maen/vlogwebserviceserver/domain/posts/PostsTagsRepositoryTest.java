@@ -14,14 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TagListRepositoryTest {
+public class PostsTagsRepositoryTest {
 
     @Autowired
-    TagListRepository tagListRepository;
+    PostsTagsRepository postsTagsRepository;
 
     @AfterEach
     public void cleanup() {
-        tagListRepository.deleteAll();
+        postsTagsRepository.deleteAll();
     }
 
     @Test
@@ -30,16 +30,16 @@ public class TagListRepositoryTest {
         Long postsId = 1L;
         Long tagsId = 1L;
 
-        tagListRepository.save(TagList.builder()
+        postsTagsRepository.save(PostsTags.builder()
                 .postsId(postsId)
                 .tagsId(tagsId)
                 .build());
 
         //when
-        List<TagList> tagLists = tagListRepository.findAll();
+        List<PostsTags> tagLists = postsTagsRepository.findAll();
 
         //then
-        TagList tagList = tagLists.get(0);
+        PostsTags tagList = tagLists.get(0);
 
         assertThat(tagList.getPostsId()).isEqualTo(postsId);
         assertThat(tagList.getTagsId()).isEqualTo(tagsId);

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class TagList {
+public class PostsTags {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class TagList {
 
 
     @Builder
-    public TagList(Long postsId, Long tagsId){
+    public PostsTags(Long postsId, Long tagsId){
         this.postsId = postsId;
         this.tagsId = tagsId;
     }
