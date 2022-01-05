@@ -1,11 +1,11 @@
 package com.maen.vlogwebserviceserver.service.posts;
 
-
+import com.maen.vlogwebserviceserver.domain.posts.PostsTags;
+import com.maen.vlogwebserviceserver.domain.posts.PostsTagsRepository;
 import com.maen.vlogwebserviceserver.domain.posts.Tags;
 import com.maen.vlogwebserviceserver.domain.posts.TagsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +16,39 @@ import java.util.StringTokenizer;
 public class TagsService {
 
     private final TagsRepository tagsRepository;
+    private final PostsTagsRepository postsTagsRepository;
 
-    @Transactional
-    public List<Long> save(String tags) {
-        StringTokenizer st =new StringTokenizer(tags,"#");
-        List<Long> tagIds = new ArrayList<>();
-        while (st.hasMoreTokens()) {
-            tagIds.add(tagsRepository.save(Tags.builder()
-                    .content(st.nextToken())
-                    .build()).getId());
+    public void save(String postInput, Long postsId) {
+        StringTokenizer st = new StringTokenizer(postInput,"#");
+        while(st.hasMoreTokens()){
+            String content = st.nextToken();
+            Tags tags;
+            if(!tagsRepository.existsByContent(content)){
+                tags = tagsRepository.save(Tags.builder()
+                        .content(content)
+                        .build());
+            }
+            else {
+                tags = tagsRepository.findByContent(content);
+                tags.countUp();
+            }
+            postsTagsRepository.save(PostsTags.builder()
+                    .postsId(postsId)
+                    .tagsId(tags.getId())
+                    .build());
         }
-        return tagIds;
     }
+
+    public List<String> findByPostsId(Long postsId) {
+        List<Long> tagsIds = postsTagsRepository.findByPostsId(postsId);
+        List<Tags> tagsList = tagsRepository.findAllById(tagsIds);
+        List<String> tags = new ArrayList<>();
+        for(Tags tag : tagsList) {
+            tags.add(tag.contentToString());
+        }
+        return tags;
+    }
+
 
 
 }

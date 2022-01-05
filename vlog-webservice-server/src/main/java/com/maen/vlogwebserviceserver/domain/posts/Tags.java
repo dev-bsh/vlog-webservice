@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -18,10 +19,24 @@ public class Tags {
     @Column(nullable = false)
     private String content;
 
+    private int count;
 
     @Builder
-    public Tags(String content){
+    public Tags(String content) {
         this.content = content;
+        this.count = 1;
+    }
+
+    public String contentToString() {
+        return "#"+content;
+    }
+
+    public void countUp() {
+        this.count++;
+    }
+
+    public void countDown() {
+        this.count--;
     }
 
 }
