@@ -5,6 +5,7 @@ import com.maen.vlogwebserviceserver.domain.HelloRepository;
 import com.maen.vlogwebserviceserver.web.dto.HelloRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service

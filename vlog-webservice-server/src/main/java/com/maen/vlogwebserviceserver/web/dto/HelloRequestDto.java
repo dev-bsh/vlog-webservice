@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class HelloRequestDto {
-    private final String name;
+    private String name;
 
+    public HelloRequestDto(String name) {
+        this.name = name;
+    }
 
     public Hello toEntity() {
-        return new Hello(name);
+        return new Hello(this.name);
     }
 }
