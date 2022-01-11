@@ -2,6 +2,7 @@ package com.maen.vlogwebserviceserver.web;
 
 import com.maen.vlogwebserviceserver.service.posts.HelloService;
 import com.maen.vlogwebserviceserver.web.dto.HelloRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.HelloResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +16,14 @@ public class HelloController {
 
     private final HelloService helloService;
 
-    @GetMapping("api/hello")
-    public List<String> hell() {
-        return Arrays.asList("안녕하세요", "Hello");
+    @GetMapping("api/hello/all")
+    public List<HelloResponseDto> hello() {
+        return helloService.findAll();
+    }
+
+    @GetMapping("api/hello/{id}")
+    public HelloResponseDto hell(@PathVariable Long id) {
+        return helloService.findById(id);
     }
 
     @PostMapping("api/hello")

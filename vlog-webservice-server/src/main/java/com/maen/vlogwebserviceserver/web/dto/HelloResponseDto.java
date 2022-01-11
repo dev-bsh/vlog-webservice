@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class HelloResponseDto {
-    private final String name;
-    private final int amount;
+    private  String name;
+
+    public HelloResponseDto(String name) {
+        this.name = name;
+    }
 
 }

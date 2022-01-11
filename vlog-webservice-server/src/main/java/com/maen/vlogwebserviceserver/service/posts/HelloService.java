@@ -3,9 +3,13 @@ package com.maen.vlogwebserviceserver.service.posts;
 import com.maen.vlogwebserviceserver.domain.Hello;
 import com.maen.vlogwebserviceserver.domain.HelloRepository;
 import com.maen.vlogwebserviceserver.web.dto.HelloRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.HelloResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -27,4 +31,19 @@ public class HelloService {
         helloRepository.delete(hello);
     }
 
+    public HelloResponseDto findById(Long id) {
+        return new HelloResponseDto(helloRepository.getById(id).getName());
+
+    }
+
+    public List<HelloResponseDto> findAll() {
+        List<HelloResponseDto> helloResponseDtoList = new ArrayList<>();
+        HelloResponseDto helloResponseDto;
+        for(Hello hello : helloRepository.findAll()) {
+            helloResponseDto = new HelloResponseDto(hello.getName());
+            helloResponseDtoList.add(helloResponseDto);
+        }
+        return helloResponseDtoList;
+
+    }
 }
