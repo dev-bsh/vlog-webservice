@@ -4,7 +4,10 @@ package com.maen.vlogwebserviceserver.web;
 import com.maen.vlogwebserviceserver.domain.posts.*;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
+import com.maen.vlogwebserviceserver.service.posts.PostsService;
+import com.maen.vlogwebserviceserver.service.posts.TagsService;
 import com.maen.vlogwebserviceserver.web.dto.PostsResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +49,9 @@ public class PostsApiControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PostsService postsService;
+
 
     @Autowired
     private MockMvc mvc;
@@ -65,7 +71,7 @@ public class PostsApiControllerTest {
         String description = "설명";
         String tags = "#여행#일상#운동";
         Long userId = 1L;
-        MockMultipartFile multipartFile = new MockMultipartFile("video","test.txt", MediaType.MULTIPART_FORM_DATA_VALUE,new FileInputStream("C:\\Users\\Bang\\Desktop\\test.txt"));
+        MockMultipartFile multipartFile = new MockMultipartFile("video","test.mp4", "video/mp4",new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
         String url = "http://localhost:"+port+"/api/v1/posts";
         tagsRepository.save(Tags.builder()
                 .content("여행")
@@ -107,20 +113,18 @@ public class PostsApiControllerTest {
         String description = "설명";
         String tags = "#여행#일상#운동";
         Long userId = 1L;
-        long postsId = 1;
-        MockMultipartFile multipartFile = new MockMultipartFile("video","test.txt", MediaType.MULTIPART_FORM_DATA_VALUE,new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
-        String postUrl = "http://localhost:"+port+"/api/v1/posts";
+        MockMultipartFile multipartFile = new MockMultipartFile("video","test.mp4", "video/mp4",new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
 
-        mvc.perform(multipart(postUrl)
-                        .file(multipartFile)
-                        .param("userId", String.valueOf(userId))
-                        .param("tags", tags)
-                        .param("description",description));
+        Long postsId = postsService.save(PostsSaveRequestDto.builder()
+                .tags(tags)
+                .userId(userId)
+                .description(description)
+                .video(multipartFile)
+                .build());
 
         String name = "테스터";
         String email = "abc@123.com";
         String picture = "사진";
-
 
         userRepository.save(User.builder()
                 .name(name)
@@ -128,16 +132,12 @@ public class PostsApiControllerTest {
                 .picture(picture)
                 .build());
 
-        String getUrl = postUrl+"/"+postsId;
-
-        //when
-        mvc.perform(get(getUrl))
-                .andDo(print())
-                .andExpect(status().isOk());
+        String url = "http://localhost:8080/api/v1/posts/"+postsId;
 
         //then
-
-
+        mvc.perform(get(url))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
 }
