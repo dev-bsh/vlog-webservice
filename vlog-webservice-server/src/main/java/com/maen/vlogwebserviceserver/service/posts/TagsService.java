@@ -39,12 +39,18 @@ public class TagsService {
         }
     }
 
-    public List<String> findByPostsId(Long postsId) {
-        List<Long> tagsIds = postsTagsRepository.findByPostsId(postsId);
+    public String findByPostsId(Long postsId) {
+        List<PostsTags> postsTags = postsTagsRepository.findByPostsId(postsId);
+        List<Long> tagsIds = new ArrayList<>();
+        for(PostsTags postTag : postsTags) {
+            tagsIds.add(postTag.getTagsId());
+        }
+
         List<Tags> tagsList = tagsRepository.findAllById(tagsIds);
-        List<String> tags = new ArrayList<>();
+        String tags ="";
+
         for(Tags tag : tagsList) {
-            tags.add(tag.contentToString());
+            tags += tag.contentToString();
         }
         return tags;
     }
