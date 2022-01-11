@@ -26,22 +26,32 @@ public class PostsLikeRepositoryTest {
     @Test
     public void 좋아요저장_불러오기() {
         //given
-        Long userId = 1L;
-        Long postsId = 1L;
+        Long user1Id = 1L;
+        Long posts1Id = 1L;
+
+        Long user2Id = 2L;
+        Long posts2Id = 2L;
 
         postsLikeRepository.save(PostsLike.builder()
-                .userId(userId)
-                .postsId(postsId)
+                .userId(user1Id)
+                .postsId(posts1Id)
+                .build());
+        postsLikeRepository.save(PostsLike.builder()
+                .userId(user1Id)
+                .postsId(posts2Id)
+                .build());
+        postsLikeRepository.save(PostsLike.builder()
+                .userId(user2Id)
+                .postsId(posts2Id)
                 .build());
 
         //when
-        List<PostsLike> postsLikeList = postsLikeRepository.findAll();
+        int post1LikeCount = postsLikeRepository.countByPostsId(posts1Id);
+        int post2LikeCount = postsLikeRepository.countByPostsId(posts2Id);
 
         //then
-        PostsLike postsLike = postsLikeList.get(0);
-        assertThat(postsLike.getUserId()).isEqualTo(userId);
-        assertThat(postsLike.getPostsId()).isEqualTo(postsId);
-
+        assertThat(post1LikeCount).isEqualTo(1);
+        assertThat(post2LikeCount).isEqualTo(2);
     }
 
 
