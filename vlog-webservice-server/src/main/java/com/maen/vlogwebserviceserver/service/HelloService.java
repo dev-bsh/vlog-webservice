@@ -1,4 +1,4 @@
-package com.maen.vlogwebserviceserver.service.posts;
+package com.maen.vlogwebserviceserver.service;
 
 import com.maen.vlogwebserviceserver.domain.Hello;
 import com.maen.vlogwebserviceserver.domain.HelloRepository;
@@ -6,7 +6,6 @@ import com.maen.vlogwebserviceserver.web.dto.HelloRequestDto;
 import com.maen.vlogwebserviceserver.web.dto.HelloResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

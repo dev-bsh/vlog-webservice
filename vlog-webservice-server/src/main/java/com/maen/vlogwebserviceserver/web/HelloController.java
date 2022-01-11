@@ -1,6 +1,6 @@
 package com.maen.vlogwebserviceserver.web;
 
-import com.maen.vlogwebserviceserver.service.posts.HelloService;
+import com.maen.vlogwebserviceserver.service.HelloService;
 import com.maen.vlogwebserviceserver.web.dto.HelloRequestDto;
 import com.maen.vlogwebserviceserver.web.dto.HelloResponseDto;
 import lombok.RequiredArgsConstructor;
