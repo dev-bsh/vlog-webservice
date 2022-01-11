@@ -9,7 +9,6 @@ import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Entity
 public class Hello {
 
