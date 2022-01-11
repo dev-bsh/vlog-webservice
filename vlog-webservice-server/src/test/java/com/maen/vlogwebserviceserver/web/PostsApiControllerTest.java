@@ -2,6 +2,9 @@ package com.maen.vlogwebserviceserver.web;
 
 
 import com.maen.vlogwebserviceserver.domain.posts.*;
+import com.maen.vlogwebserviceserver.domain.user.User;
+import com.maen.vlogwebserviceserver.domain.user.UserRepository;
+import com.maen.vlogwebserviceserver.web.dto.PostsResponseDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,8 +22,7 @@ import java.io.FileInputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,11 +44,18 @@ public class PostsApiControllerTest {
     private TagsRepository tagsRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+
+    @Autowired
     private MockMvc mvc;
 
     @AfterEach
-    public void tearDown() throws Exception{
+    public void tearDown() {
         postsRepository.deleteAll();
+        postsTagsRepository.deleteAll();
+        tagsRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 
@@ -94,18 +104,34 @@ public class PostsApiControllerTest {
     @Test
     public void Posts_불러온다() throws Exception {
         //given
-        String videoName = "test";
         String description = "설명";
+        String tags = "#여행#일상#운동";
         Long userId = 1L;
+        long postsId = 1;
+        MockMultipartFile multipartFile = new MockMultipartFile("video","test.txt", MediaType.MULTIPART_FORM_DATA_VALUE,new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
+        String postUrl = "http://localhost:"+port+"/api/v1/posts";
+
+        mvc.perform(multipart(postUrl)
+                        .file(multipartFile)
+                        .param("userId", String.valueOf(userId))
+                        .param("tags", tags)
+                        .param("description",description));
+
+        String name = "테스터";
+        String email = "abc@123.com";
+        String picture = "사진";
 
 
-        postsRepository.save(Posts.builder().build())
+        userRepository.save(User.builder()
+                .name(name)
+                .email(email)
+                .picture(picture)
+                .build());
 
-
-        String url = "http://localhost:"+port+"/api/v1/posts";
+        String getUrl = postUrl+"/"+postsId;
 
         //when
-        mvc.perform(get(url))
+        mvc.perform(get(getUrl))
                 .andDo(print())
                 .andExpect(status().isOk());
 
