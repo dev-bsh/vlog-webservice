@@ -6,6 +6,7 @@ import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.web.dto.CommentsResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsSaveRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.CommentsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +44,9 @@ public class CommentsService {
     }
 
     @Transactional
-    public Long update(Long id, String content) {
+    public Long update(Long id, CommentsUpdateRequestDto updateRequestDto) {
         Comments comments = commentsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + id));
-        comments.update(content);
+        comments.update(updateRequestDto);
         return id;
     }
 

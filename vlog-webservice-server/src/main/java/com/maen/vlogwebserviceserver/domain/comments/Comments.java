@@ -1,6 +1,7 @@
 package com.maen.vlogwebserviceserver.domain.comments;
 
 
+import com.maen.vlogwebserviceserver.web.dto.CommentsUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,8 +33,8 @@ public class Comments {
         this.content = content;
     }
 
-    public void update(String content) {
-        this.content = content;
+    public void update(CommentsUpdateRequestDto updateRequestDto) {
+        this.content = updateRequestDto.getContent();
     }
 
 

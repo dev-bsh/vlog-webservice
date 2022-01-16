@@ -4,6 +4,7 @@ package com.maen.vlogwebserviceserver.web;
 import com.maen.vlogwebserviceserver.service.comments.CommentsService;
 import com.maen.vlogwebserviceserver.web.dto.CommentsResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsSaveRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.CommentsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,8 @@ public class CommentsApiController {
     }
 
     @PutMapping("api/v1/comments/{id}")
-    public Long update(@PathVariable Long id ,@RequestBody String content) {
-        return commentsService.update(id, content);
+    public Long update(@PathVariable Long id ,@RequestBody CommentsUpdateRequestDto updateRequestDto) {
+        return commentsService.update(id, updateRequestDto);
     }
 
     @DeleteMapping("api/v1/comments/{id}")
