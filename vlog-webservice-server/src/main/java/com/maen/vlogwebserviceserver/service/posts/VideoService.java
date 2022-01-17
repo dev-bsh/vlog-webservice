@@ -3,16 +3,22 @@ package com.maen.vlogwebserviceserver.service.posts;
 
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.jcodec.api.FrameGrab;
+import org.jcodec.api.JCodecException;
+import org.jcodec.common.model.Picture;
+import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -21,11 +27,18 @@ public class VideoService {
 
     @Value("${spring.servlet.multipart.location}")
     private String filePath;
+    public final String THUMBNAIL_FORMAT = "png";
 
-    public String save(PostsSaveRequestDto postsSaveRequestDto) throws IOException {
+    public String save(PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
+        //비디오 및 썸네일 폴더 생성
+        String thumbnailPath = filePath+"thumbnail\\";
+        File thumbnailDirectory = new File(thumbnailPath);
+        thumbnailDirectory.mkdirs();
+
+        //파일 저장 및 썸네일 생성
         String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getOriginalFilename();
         postsSaveRequestDto.getVideo().transferTo(new File(filePath+videoName));
-
+        makeThumbnail(videoName,thumbnailPath);
         return videoName;
     }
 
@@ -56,5 +69,16 @@ public class VideoService {
 
     }
 
+    public void makeThumbnail(String videoName, String thumbnailPath) throws IOException, JCodecException {
+        File source = new File(filePath+videoName);
+        StringTokenizer st = new StringTokenizer(videoName,".");
+        String thumbnailName = st.nextToken()+"."+THUMBNAIL_FORMAT;
+
+        // 0프레임 기준 썸네일 생성
+        int frameNumber = 0;
+        Picture picture = FrameGrab.getFrameFromFile(source, frameNumber);
+        BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
+        ImageIO.write(bufferedImage, THUMBNAIL_FORMAT, new File(thumbnailPath+thumbnailName));
+    }
 
 }
