@@ -34,5 +34,9 @@ public class Posts {
         this.views = 0;
     }
 
+    public void upViews() {
+        this.views++;
+    }
+
 
 }
