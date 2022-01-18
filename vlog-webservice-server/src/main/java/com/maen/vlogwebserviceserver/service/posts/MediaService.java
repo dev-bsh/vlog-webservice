@@ -5,6 +5,7 @@ import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
+import org.jcodec.common.io.IOUtils;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,13 +16,12 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-public class VideoService {
+public class MediaService {
 
     @Value("${spring.servlet.multipart.location}")
     private String filePath;
@@ -85,4 +85,11 @@ public class VideoService {
         return thumbnailName;
     }
 
+    //썸네일 출력
+    public ResponseEntity<byte[]> findThumbnailByName(String thumbnailName) throws IOException {
+        InputStream inputStream = new FileInputStream(filePath+"thumbnail\\"+thumbnailName);
+        byte[] imageBytes = IOUtils.toByteArray(inputStream);
+        inputStream.close();
+        return new ResponseEntity<byte[]>(imageBytes,HttpStatus.OK);
+    }
 }

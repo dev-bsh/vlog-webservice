@@ -21,16 +21,20 @@ public class Posts {
     @Column(nullable = false)
     private String videoName;
 
+    @Column(nullable = false)
+    private String thumbnailName;
+
     private String description;
 
     private int views;
 
 
     @Builder
-    public Posts(Long userId, String videoName, String description){
+    public Posts(Long userId, String videoName, String description, String thumbnailName){
         this.userId = userId;
         this.videoName = videoName;
         this.description = description;
+        this.thumbnailName = thumbnailName;
         this.views = 0;
     }
 

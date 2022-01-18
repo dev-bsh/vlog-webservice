@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostsResponseDto {
+public class PostsDetailResponseDto {
 
     private String author;
     private String description;
@@ -21,7 +21,7 @@ public class PostsResponseDto {
 
 
     @Builder
-    public PostsResponseDto(Posts posts, String author, String tags, int postsLike, int commentsCount) {
+    public PostsDetailResponseDto(Posts posts, String author, String tags, int postsLike, int commentsCount) {
         this.description = posts.getDescription();
         this.views = posts.getViews();
         this.videoName = posts.getVideoName();

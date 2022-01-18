@@ -17,6 +17,9 @@ public class PostsSaveRequestDto {
     private String tags;
     private MultipartFile video;
 
+    private String videoName;
+    private String thumbnailName;
+
     @Builder
     public PostsSaveRequestDto(Long userId, String description, String tags, MultipartFile video){
         this.userId = userId;
@@ -25,11 +28,12 @@ public class PostsSaveRequestDto {
         this.video = video;
     }
 
-    public Posts toEntity(String videoName) {
+    public Posts toEntity() {
         return Posts.builder()
                 .userId(userId)
                 .description(description)
                 .videoName(videoName)
+                .thumbnailName(thumbnailName)
                 .build();
     }
 
