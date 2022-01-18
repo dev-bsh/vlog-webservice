@@ -17,9 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.StringTokenizer;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -27,9 +25,10 @@ public class VideoService {
 
     @Value("${spring.servlet.multipart.location}")
     private String filePath;
-    public final String THUMBNAIL_FORMAT = "png";
+    public final String THUMBNAIL_FORMAT = "jpg";
 
-    public String save(PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
+    //영상 파일 저장
+    public void save(PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
         //비디오 및 썸네일 폴더 생성
         String thumbnailPath = filePath+"thumbnail\\";
         File thumbnailDirectory = new File(thumbnailPath);
@@ -38,10 +37,12 @@ public class VideoService {
         //파일 저장 및 썸네일 생성
         String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getOriginalFilename();
         postsSaveRequestDto.getVideo().transferTo(new File(filePath+videoName));
-        makeThumbnail(videoName,thumbnailPath);
-        return videoName;
+        String thumbnailName = makeThumbnail(videoName,thumbnailPath);
+        postsSaveRequestDto.setVideoName(videoName);
+        postsSaveRequestDto.setThumbnailName(thumbnailName);
     }
 
+    //영상파일 스트리밍 재생
     public ResponseEntity<ResourceRegion> findVideoByName(HttpHeaders httpHeaders, String videoName) throws Exception {
 
         UrlResource video = new UrlResource("file:"+filePath+videoName);
@@ -69,7 +70,8 @@ public class VideoService {
 
     }
 
-    public void makeThumbnail(String videoName, String thumbnailPath) throws IOException, JCodecException {
+    //썸네일 생성
+    public String makeThumbnail(String videoName, String thumbnailPath) throws IOException, JCodecException {
         File source = new File(filePath+videoName);
         StringTokenizer st = new StringTokenizer(videoName,".");
         String thumbnailName = st.nextToken()+"."+THUMBNAIL_FORMAT;
@@ -79,6 +81,8 @@ public class VideoService {
         Picture picture = FrameGrab.getFrameFromFile(source, frameNumber);
         BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
         ImageIO.write(bufferedImage, THUMBNAIL_FORMAT, new File(thumbnailPath+thumbnailName));
+
+        return thumbnailName;
     }
 
 }
