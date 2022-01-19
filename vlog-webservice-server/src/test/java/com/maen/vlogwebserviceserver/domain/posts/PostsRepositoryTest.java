@@ -29,11 +29,14 @@ public class PostsRepositoryTest {
         //given
         Long userId = 1L;
         String videoName = "영상 제목";
+        String thumbnailName = "썸네일 제목";
         String description = "게시물 설명";
+
 
         postsRepository.save(Posts.builder()
                 .userId(userId)
                 .videoName(videoName)
+                .thumbnailName(thumbnailName)
                 .description(description)
                 .build());
 
@@ -44,6 +47,7 @@ public class PostsRepositoryTest {
         Posts posts = postsList.get(0);
         assertThat(posts.getUserId()).isEqualTo(userId);
         assertThat(posts.getVideoName()).isEqualTo(videoName);
+        assertThat(posts.getThumbnailName()).isEqualTo(thumbnailName);
         assertThat(posts.getDescription()).isEqualTo(description);
         assertThat(posts.getViews()).isEqualTo(0);
     }
