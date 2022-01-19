@@ -21,11 +21,6 @@ public class CommentsApiController {
         return commentsService.save(saveRequestDto);
     }
 
-    @GetMapping("api/v1/comments/{postsId}")
-    public List<CommentsResponseDto> findAllByPostsId(@PathVariable Long postsId) {
-        return commentsService.findAllByPostsId(postsId);
-    }
-
     @PutMapping("api/v1/comments/{id}")
     public Long update(@PathVariable Long id ,@RequestBody CommentsUpdateRequestDto updateRequestDto) {
         return commentsService.update(id, updateRequestDto);
