@@ -18,20 +18,23 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
 
     @Override
     public List<Posts> findNextPosts(Long postsId) {
+        //한번에 불러오는 posts 개수
+        int nextPostListSize = 12;
+
         return jpaQueryFactory
                 .selectFrom(posts)
                 .where(
-                        isNullPostsId(postsId)
+                        ltPostsId(postsId)
                 )
                 .orderBy(posts.id.desc())
-                .limit(12)
+                .limit(nextPostListSize)
                 .fetch();
     }
 
-    private BooleanExpression isNullPostsId(Long postsId) {
+    private BooleanExpression ltPostsId(Long postsId) {
         if(postsId == null) {
             return null;
         }
-        return posts.id.gt(postsId);
+        return posts.id.lt(postsId);
     }
 }

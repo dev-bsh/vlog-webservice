@@ -90,6 +90,8 @@ public class MediaService {
         InputStream inputStream = new FileInputStream(filePath+"thumbnail\\"+thumbnailName);
         byte[] imageBytes = IOUtils.toByteArray(inputStream);
         inputStream.close();
-        return new ResponseEntity<byte[]>(imageBytes,HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
     }
 }
