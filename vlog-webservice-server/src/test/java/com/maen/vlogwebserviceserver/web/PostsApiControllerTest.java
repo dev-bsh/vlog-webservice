@@ -9,10 +9,9 @@ import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.service.comments.CommentsService;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
-import com.maen.vlogwebserviceserver.web.dto.CommentsResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
-import org.jcodec.api.JCodecException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +72,7 @@ public class PostsApiControllerTest {
         postsTagsRepository.deleteAll();
         tagsRepository.deleteAll();
         userRepository.deleteAll();
+
     }
 
 
@@ -181,7 +180,9 @@ public class PostsApiControllerTest {
             if(i>=lastSavedPostsId-postsListSize) {
                 Posts posts = postsRepository.findById(postsId).orElseThrow(()->new IllegalArgumentException("없는 posts"));
                 responseDtoList.add(PostsAllResponseDto.builder()
-                        .author(userName)
+                        .authorId(userId)
+                        .postsId(postsId)
+                        .authorName(userName)
                         .views(posts.getViews())
                         .thumbnailName(posts.getThumbnailName())
                         .postsLike(0)
@@ -227,7 +228,9 @@ public class PostsApiControllerTest {
             if(i<lastReadPostsId) {
                 Posts posts = postsRepository.findById(postsId).orElseThrow(()->new IllegalArgumentException("없는 posts"));
                 responseDtoList.add(PostsAllResponseDto.builder()
-                        .author(userName)
+                        .authorId(userId)
+                        .postsId(postsId)
+                        .authorName(userName)
                         .views(posts.getViews())
                         .thumbnailName(posts.getThumbnailName())
                         .postsLike(0)
@@ -252,7 +255,7 @@ public class PostsApiControllerTest {
         // commentsId == null 이면 id 최근부터 최대 12개
 
         //given
-        List<CommentsResponseDto> responseDtoList = new ArrayList<>();
+        List<CommentsAllResponseDto> responseDtoList = new ArrayList<>();
         Long postsId = 1L;
         int lateSavedCommentsId = 20;
         int commentsListSize = 12;
@@ -272,7 +275,7 @@ public class PostsApiControllerTest {
                     .content(String.valueOf(i))
                     .build());
             if(i>=lateSavedCommentsId-commentsListSize){
-                responseDtoList.add(CommentsResponseDto.builder()
+                responseDtoList.add(CommentsAllResponseDto.builder()
                         .author(userName)
                         .contents(String.valueOf(i))
                         .commentsLike(0)
@@ -295,7 +298,7 @@ public class PostsApiControllerTest {
         // commentsId == n 이면 n+1 부터 최대 12개
 
         //given
-        List<CommentsResponseDto> responseDtoList = new ArrayList<>();
+        List<CommentsAllResponseDto> responseDtoList = new ArrayList<>();
         Long postsId = 1L;
         int lateSavedCommentsId = 20;
         int lastReadCommentsId = 8;
@@ -315,7 +318,7 @@ public class PostsApiControllerTest {
                     .content(String.valueOf(i))
                     .build());
             if(i<lastReadCommentsId){
-                responseDtoList.add(CommentsResponseDto.builder()
+                responseDtoList.add(CommentsAllResponseDto.builder()
                         .author(userName)
                         .contents(String.valueOf(i))
                         .commentsLike(0)

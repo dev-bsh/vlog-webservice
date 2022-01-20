@@ -4,7 +4,7 @@ package com.maen.vlogwebserviceserver.web;
 import com.maen.vlogwebserviceserver.service.comments.CommentsService;
 import com.maen.vlogwebserviceserver.service.posts.MediaService;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
-import com.maen.vlogwebserviceserver.web.dto.CommentsResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsDetailResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.jcodec.api.JCodecException;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +32,7 @@ public class PostsApiController {
     }
 
 
-    // 메인화면 posts 리스트
+    // 메인화면 posts 리스트 처음 불러오기
     @GetMapping("api/v1/posts")
     public List<PostsAllResponseDto> findAll() {
         return postsService.findAll(null);
@@ -50,21 +49,20 @@ public class PostsApiController {
     }
 
 
-
     // posts 디테일 메타데이터
     @GetMapping("api/v1/posts/{id}/detail")
     public PostsDetailResponseDto findById(@PathVariable Long id) {
         return postsService.findById(id);
     }
-    //posts 디테일 댓글
-    @GetMapping("api/v1/posts/{postsId}/comments/{commentsId}")
-    public List<CommentsResponseDto> findAllByPostsId(@PathVariable Long postsId, @PathVariable Long commentsId) {
-        return commentsService.findAllByPostsId(postsId,commentsId);
+    //posts 디테일 댓글 처음 불러오기
+    @GetMapping("api/v1/posts/{postsId}/comments")
+    public List<CommentsAllResponseDto> findAllByPostsId(@PathVariable Long postsId) {
+        return commentsService.findAllByPostsId(postsId,null);
     }
     //posts 디테일 댓글 스크롤로 불러오기
-    @GetMapping("api/v1/posts/{postsId}/comments")
-    public List<CommentsResponseDto> findAllByPostsId(@PathVariable Long postsId) {
-        return commentsService.findAllByPostsId(postsId,null);
+    @GetMapping("api/v1/posts/{postsId}/comments/{commentsId}")
+    public List<CommentsAllResponseDto> findAllByPostsId(@PathVariable Long postsId, @PathVariable Long commentsId) {
+        return commentsService.findAllByPostsId(postsId,commentsId);
     }
     //posts 디테일 영상 스트리밍 재생
     @GetMapping("api/v1/posts/video/{videoName}")

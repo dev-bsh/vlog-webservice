@@ -4,6 +4,7 @@ import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.posts.Posts;
 import com.maen.vlogwebserviceserver.domain.posts.PostsLikeRepository;
 import com.maen.vlogwebserviceserver.domain.posts.PostsRepository;
+import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsDetailResponseDto;
@@ -41,19 +42,19 @@ public class PostsService {
     public PostsDetailResponseDto findById(Long id) {
         // 1.posts 불러오기  2.유저이름 불러오기 3.태그 불러오기 4.좋아요 불러오기 5. 댓글 수 불러오기 5.dto 반환
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        String author = userRepository.getById(posts.getUserId()).getName();
+        User user = userRepository.getById(posts.getUserId());
         String tags = tagsService.findByPostsId(posts.getId());
         int postLike = postsLikeRepository.countByPostsId(posts.getId());
-        int commentsCount = commentsRepository.countByPostsId(posts.getId());
+        int totalCommentsSize = commentsRepository.countByPostsId(posts.getId());
         // 조회수 증가
         posts.upViews();
 
         return PostsDetailResponseDto.builder()
                 .posts(posts)
-                .author(author)
+                .user(user)
                 .tags(tags)
                 .postsLike(postLike)
-                .commentsCount(commentsCount)
+                .totalCommentsSize(totalCommentsSize)
                 .build();
     }
 
@@ -62,11 +63,12 @@ public class PostsService {
         List<Posts> postsList = postsRepository.findNextPosts(last_post_id);
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Posts posts : postsList) {
-            String author = userRepository.getById(posts.getUserId()).getName();
+            User user = userRepository.findById(posts.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당 게시물 작성자가 없습니다. id ="+posts.getUserId()));
             int postsLike = postsLikeRepository.countByPostsId(posts.getId());
-
             responseDtoList.add(PostsAllResponseDto.builder()
-                    .author(author)
+                    .postsId(posts.getId())
+                    .authorId(user.getId())
+                    .authorName(user.getName())
                     .postsLike(postsLike)
                     .views(posts.getViews())
                     .thumbnailName(posts.getThumbnailName())

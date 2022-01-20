@@ -2,13 +2,10 @@ package com.maen.vlogwebserviceserver.web;
 
 
 import com.maen.vlogwebserviceserver.service.comments.CommentsService;
-import com.maen.vlogwebserviceserver.web.dto.CommentsResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsSaveRequestDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController

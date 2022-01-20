@@ -4,7 +4,7 @@ import com.maen.vlogwebserviceserver.domain.comments.Comments;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsLikeRepository;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
-import com.maen.vlogwebserviceserver.web.dto.CommentsResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsSaveRequestDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public class CommentsService {
     }
 
     @Transactional
-    public List<CommentsResponseDto> findAllByPostsId(Long postsId, Long commentsId) {
+    public List<CommentsAllResponseDto> findAllByPostsId(Long postsId, Long commentsId) {
         List<Comments> commentsList = commentsRepository.findNextComments(postsId, commentsId);
-        List<CommentsResponseDto> responseDtoList = new ArrayList<>();
+        List<CommentsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Comments comments : commentsList) {
             String author = userRepository.getById(comments.getUserId()).getName();
             int commentLike = commentsLikeRepository.countByCommentsId(comments.getId());
-            responseDtoList.add(CommentsResponseDto.builder()
+            responseDtoList.add(CommentsAllResponseDto.builder()
                     .author(author)
                     .commentsLike(commentLike)
                     .contents(comments.getContent())

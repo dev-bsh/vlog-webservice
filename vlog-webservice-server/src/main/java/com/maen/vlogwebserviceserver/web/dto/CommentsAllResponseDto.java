@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CommentsResponseDto {
+public class CommentsAllResponseDto {
 
     private String author;
     private String contents;
     private int commentsLike;
 
     @Builder
-    public CommentsResponseDto(String author, String contents, int commentsLike) {
+    public CommentsAllResponseDto(String author, String contents, int commentsLike) {
         this.author = author;
         this.contents = contents;
         this.commentsLike = commentsLike;
