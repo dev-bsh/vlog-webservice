@@ -19,23 +19,15 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <ul>
-          {message.map((text, index) => <li key={`${index}-${text}`}>{text}</li>)}
-        </ul>
-      </header>
+        <form method="post" action="http://localhost:8080/api/v1/posts" encType="multipart/form-data">
+            <input multiple type="file" name="video"/>
+
+            <input type="text" name="userId"/>
+                <input type="text" name="description"/>
+                    <input type="text" name="tags"/>
+
+                        <button>submit</button>
+        </form>
     </div>
   );
 }

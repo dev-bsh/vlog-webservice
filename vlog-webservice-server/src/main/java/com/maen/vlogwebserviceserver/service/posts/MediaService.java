@@ -24,19 +24,20 @@ import java.util.*;
 public class MediaService {
 
     @Value("${spring.servlet.multipart.location}")
-    private String filePath;
-    public final String THUMBNAIL_FORMAT = "jpg";
+    private String FILE_PATH;
+    private final String THUMBNAIL_FORMAT = "jpg";
+    private final String THUMBNAIL_FOLDER_NAME = "thumbnail\\";
 
     //영상 파일 저장
     public void save(PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
         //비디오 및 썸네일 폴더 생성
-        String thumbnailPath = filePath+"thumbnail\\";
+        String thumbnailPath = FILE_PATH+THUMBNAIL_FOLDER_NAME;
         File thumbnailDirectory = new File(thumbnailPath);
         thumbnailDirectory.mkdirs();
 
         //파일 저장 및 썸네일 생성
         String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getOriginalFilename();
-        postsSaveRequestDto.getVideo().transferTo(new File(filePath+videoName));
+        postsSaveRequestDto.getVideo().transferTo(new File(FILE_PATH+videoName));
         String thumbnailName = makeThumbnail(videoName,thumbnailPath);
         postsSaveRequestDto.setVideoName(videoName);
         postsSaveRequestDto.setThumbnailName(thumbnailName);
@@ -45,7 +46,7 @@ public class MediaService {
     //영상파일 스트리밍 재생
     public ResponseEntity<ResourceRegion> findVideoByName(HttpHeaders httpHeaders, String videoName) throws Exception {
 
-        UrlResource video = new UrlResource("file:"+filePath+videoName);
+        UrlResource video = new UrlResource("file:"+FILE_PATH+videoName);
         ResourceRegion resourceRegion;
         final long chunkSize = 1000000L;
         long contentLength = video.contentLength();
@@ -72,7 +73,7 @@ public class MediaService {
 
     //썸네일 생성
     public String makeThumbnail(String videoName, String thumbnailPath) throws IOException, JCodecException {
-        File source = new File(filePath+videoName);
+        File source = new File(FILE_PATH+videoName);
         StringTokenizer st = new StringTokenizer(videoName,".");
         String thumbnailName = st.nextToken()+"."+THUMBNAIL_FORMAT;
 
@@ -87,7 +88,7 @@ public class MediaService {
 
     //썸네일 출력
     public ResponseEntity<byte[]> findThumbnailByName(String thumbnailName) throws IOException {
-        InputStream inputStream = new FileInputStream(filePath+"thumbnail\\"+thumbnailName);
+        InputStream inputStream = new FileInputStream(FILE_PATH+THUMBNAIL_FOLDER_NAME+thumbnailName);
         byte[] imageBytes = IOUtils.toByteArray(inputStream);
         inputStream.close();
         return ResponseEntity.status(HttpStatus.OK)
