@@ -24,8 +24,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('com.h2database:h2')
 
-    implementation('org.jcodec:jcodec:0.2.5')
-    implementation('org.jcodec:jcodec-javase:0.2.5')
+    implementation('net.bramp.ffmpeg:ffmpeg:0.6.2')
 
     implementation('com.querydsl:querydsl-jpa')
     annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa")
