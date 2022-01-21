@@ -9,7 +9,6 @@ import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsDetailResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.jcodec.api.JCodecException;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class PostsApiController {
     private final CommentsService commentsService;
 
     @PostMapping("api/v1/posts")
-    public Long save(@ModelAttribute PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
+    public Long save(@ModelAttribute PostsSaveRequestDto postsSaveRequestDto) throws IOException {
        return postsService.save(postsSaveRequestDto);
     }
 

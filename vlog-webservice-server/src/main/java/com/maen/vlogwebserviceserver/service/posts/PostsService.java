@@ -10,7 +10,6 @@ import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsDetailResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.jcodec.api.JCodecException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +29,7 @@ public class PostsService {
     private final MediaService mediaService;
 
     @Transactional
-    public Long save(PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
+    public Long save(PostsSaveRequestDto postsSaveRequestDto) throws IOException {
         // 1.영상 저장 및 영상&썸네일 파일 이름 지정 2.posts entity 생성 3.tag 저장
         mediaService.save(postsSaveRequestDto);
         Long postsId = postsRepository.save(postsSaveRequestDto.toEntity()).getId();
