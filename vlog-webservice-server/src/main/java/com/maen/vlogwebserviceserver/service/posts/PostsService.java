@@ -58,8 +58,15 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsAllResponseDto> findAllInMainPage(Long last_post_id) {
-        List<Posts> postsList = postsRepository.findAllInMainPage(last_post_id);
+    public List<PostsAllResponseDto> findAllByParams(String tag, Long last_post_id) {
+        List<Posts> postsList;
+        if(tag == null) {
+            postsList = postsRepository.findAllInMainPage(last_post_id);
+        }
+        else {
+            postsList = postsRepository.findAllByTag(tag, last_post_id);
+        }
+
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Posts posts : postsList) {
             User user = userRepository.findById(posts.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당 게시물 작성자가 없습니다. id ="+posts.getUserId()));
@@ -75,4 +82,5 @@ public class PostsService {
         }
         return responseDtoList;
     }
+
 }

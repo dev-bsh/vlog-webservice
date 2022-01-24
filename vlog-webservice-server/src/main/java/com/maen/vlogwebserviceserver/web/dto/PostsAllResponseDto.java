@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PostsAllResponseDto {
-
+    // 메인화면 초기 및 스크롤 List 반환  & 검색 List 반환
     private Long postsId;
     private Long authorId;
     private String authorName;
@@ -24,6 +24,5 @@ public class PostsAllResponseDto {
         this.views = views;
         this.thumbnailName = thumbnailName;
     }
-
 
 }
