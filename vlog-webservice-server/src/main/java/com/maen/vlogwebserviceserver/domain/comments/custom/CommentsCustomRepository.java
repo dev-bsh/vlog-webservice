@@ -5,5 +5,5 @@ import com.maen.vlogwebserviceserver.domain.comments.Comments;
 import java.util.List;
 
 public interface CommentsCustomRepository {
-    List<Comments> findNextComments (Long postsId, Long commentsId);
+    List<Comments> findAllInPostsDetail(Long postsId, Long commentsId);
 }

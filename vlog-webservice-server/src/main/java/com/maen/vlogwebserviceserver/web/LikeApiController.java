@@ -16,7 +16,7 @@ public class LikeApiController {
     private final CommentsLikeService commentsLikeService;
 
     @PostMapping("api/v1/post-like")
-    public Long postsLikeUp(@RequestBody PostsLikeSaveRequestDto postsLikeSaveRequestDto) {
+    public int postsLikeUp(@RequestBody PostsLikeSaveRequestDto postsLikeSaveRequestDto) {
         return postsLikeService.save(postsLikeSaveRequestDto);
     }
 
@@ -26,7 +26,7 @@ public class LikeApiController {
     }
 
     @PostMapping("api/v1/comment-like")
-    public Long commentsLikeUp(@RequestBody CommentsLikeSaveRequestDto commentsLikeSaveRequestDto) {
+    public int commentsLikeUp(@RequestBody CommentsLikeSaveRequestDto commentsLikeSaveRequestDto) {
         return commentsLikeService.save(commentsLikeSaveRequestDto);
     }
 

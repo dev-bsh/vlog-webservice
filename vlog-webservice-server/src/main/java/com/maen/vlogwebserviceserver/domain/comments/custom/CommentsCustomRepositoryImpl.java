@@ -17,7 +17,7 @@ public class CommentsCustomRepositoryImpl implements CommentsCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Comments> findNextComments(Long postsId, Long commentsId) {
+    public List<Comments> findAllInPostsDetail(Long postsId, Long commentsId) {
         int nextCommentsListSize = 12;
 
         return jpaQueryFactory

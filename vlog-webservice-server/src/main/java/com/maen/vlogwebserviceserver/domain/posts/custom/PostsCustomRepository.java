@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PostsCustomRepository {
 
-    List<Posts> findNextPosts(Long postsId);
+    List<Posts> findAllInMainPage(Long postsId);
 
 
 }

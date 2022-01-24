@@ -17,7 +17,7 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Posts> findNextPosts(Long postsId) {
+    public List<Posts> findAllInMainPage(Long postsId) {
         //한번에 불러오는 posts 개수
         int nextPostListSize = 12;
 

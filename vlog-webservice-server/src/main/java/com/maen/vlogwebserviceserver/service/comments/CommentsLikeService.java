@@ -13,8 +13,9 @@ public class CommentsLikeService {
     private final CommentsLikeRepository commentsLikeRepository;
 
     @Transactional
-    public Long save(CommentsLikeSaveRequestDto commentsLikeSaveRequestDto) {
-        return commentsLikeRepository.save(commentsLikeSaveRequestDto.toEntity()).getId();
+    public int save(CommentsLikeSaveRequestDto commentsLikeSaveRequestDto) {
+        commentsLikeRepository.save(commentsLikeSaveRequestDto.toEntity());
+        return commentsLikeRepository.countByCommentsId(commentsLikeSaveRequestDto.getCommentsId());
     }
 
     @Transactional

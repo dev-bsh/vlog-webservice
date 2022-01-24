@@ -44,7 +44,7 @@ public class PostsService {
         User user = userRepository.getById(posts.getUserId());
         String tags = tagsService.findByPostsId(posts.getId());
         int postLike = postsLikeRepository.countByPostsId(posts.getId());
-        int totalCommentsSize = commentsRepository.countByPostsId(posts.getId());
+        int totalCommentsCount = commentsRepository.countByPostsId(posts.getId());
         // 조회수 증가
         posts.upViews();
 
@@ -53,13 +53,13 @@ public class PostsService {
                 .user(user)
                 .tags(tags)
                 .postsLike(postLike)
-                .totalCommentsSize(totalCommentsSize)
+                .totalCommentsCount(totalCommentsCount)
                 .build();
     }
 
     @Transactional(readOnly = true)
-    public List<PostsAllResponseDto> findAll(Long last_post_id) {
-        List<Posts> postsList = postsRepository.findNextPosts(last_post_id);
+    public List<PostsAllResponseDto> findAllInMainPage(Long last_post_id) {
+        List<Posts> postsList = postsRepository.findAllInMainPage(last_post_id);
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Posts posts : postsList) {
             User user = userRepository.findById(posts.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당 게시물 작성자가 없습니다. id ="+posts.getUserId()));

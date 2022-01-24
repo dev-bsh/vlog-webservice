@@ -28,8 +28,8 @@ public class CommentsService {
     }
 
     @Transactional
-    public List<CommentsAllResponseDto> findAllByPostsId(Long postsId, Long commentsId) {
-        List<Comments> commentsList = commentsRepository.findNextComments(postsId, commentsId);
+    public List<CommentsAllResponseDto> findAllInPostsDetail(Long postsId, Long commentsId) {
+        List<Comments> commentsList = commentsRepository.findAllInPostsDetail(postsId, commentsId);
         List<CommentsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Comments comments : commentsList) {
             String author = userRepository.getById(comments.getUserId()).getName();

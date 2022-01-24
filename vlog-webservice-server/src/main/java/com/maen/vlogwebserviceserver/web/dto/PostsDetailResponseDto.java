@@ -20,11 +20,11 @@ public class PostsDetailResponseDto {
     private String videoName;
     private int views;
     private int postsLike;
-    private int totalCommentsSize;
+    private int totalCommentsCount;
 
 
     @Builder
-    public PostsDetailResponseDto(Posts posts, User user, String tags, int postsLike, int totalCommentsSize) {
+    public PostsDetailResponseDto(Posts posts, User user, String tags, int postsLike, int totalCommentsCount) {
         this.postsId = posts.getId();
         this.description = posts.getDescription();
         this.views = posts.getViews();
@@ -33,7 +33,7 @@ public class PostsDetailResponseDto {
         this.authorName = user.getName();
         this.tags = tags;
         this.postsLike = postsLike;
-        this.totalCommentsSize = totalCommentsSize;
+        this.totalCommentsCount = totalCommentsCount;
     }
 
 }

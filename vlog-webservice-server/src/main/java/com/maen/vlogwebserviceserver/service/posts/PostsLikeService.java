@@ -11,11 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostsLikeService {
 
-    public final PostsLikeRepository postsLikeRepository;
+    private final PostsLikeRepository postsLikeRepository;
 
     @Transactional
-    public Long save(PostsLikeSaveRequestDto postsLikeSaveRequestDto) {
-        return postsLikeRepository.save(postsLikeSaveRequestDto.toEntity()).getId();
+    public int save(PostsLikeSaveRequestDto postsLikeSaveRequestDto) {
+        postsLikeRepository.save(postsLikeSaveRequestDto.toEntity());
+        return postsLikeRepository.countByPostsId(postsLikeSaveRequestDto.getPostsId());
     }
 
     @Transactional
