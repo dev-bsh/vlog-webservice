@@ -338,15 +338,119 @@ public class PostsApiControllerTest {
 
     }
 
-
     @Test
-    public void Thumbnail_불러온다() {
+    public void 태그검색후_첫_posts목록_조회한다() throws Exception {
+        //given
+        String tag = "운동";
+        String[] tagList = {"운동","여행","아침운동","공부"};
+        List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
 
+        int idx = 0;
+        for(int i = 1; i <= 12; i++) {
+            if(i-1<tagList.length) {
+                tagsRepository.save(Tags.builder()
+                        .content(tagList[i-1])
+                        .build());
+            }
+            String tmp = String.valueOf(i);
+            Long userId = userRepository.save(User.builder()
+                    .name(tmp)
+                    .email(tmp)
+                    .picture(tmp)
+                    .build()).getId();
+            Long postsId = postsRepository.save(Posts.builder()
+                    .userId(userId)
+                    .description(tmp)
+                    .thumbnailName(tmp)
+                    .videoName(tmp)
+                    .build()).getId();
+            if(idx>3) {
+                idx = 0;
+            }
+            postsTagsRepository.save(PostsTags.builder()
+                    .postsId(postsId)
+                    .tagsId((long) (idx++))
+                    .build());
+
+            if(i%2 == 0) {
+                responseDtoList.add(PostsAllResponseDto.builder()
+                        .authorName(tmp)
+                        .postsLike(0)
+                        .thumbnailName(tmp)
+                        .views(0)
+                        .authorId(userId)
+                        .postsId(postsId)
+                        .build());
+            }
+        }
+
+        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search";
+
+        //when
+        mvc.perform(get(url))
+                .andDo(print())
+                .andExpect(status().isOk())
+                //then
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(responseDtoList)));
     }
 
     @Test
-    public void Video_불러온다() {
+    public void 태그검색후_스크롤한_다음_posts목록_조회한다() throws Exception {
+        //given
+        String tag = "운동";
+        String[] tagList = {"운동","여행","아침운동","공부"};
+        List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
+        long last_posts_id = 6;
+        int idx = 0;
+        for(int i = 1; i <= 12; i++) {
+            if(i-1<tagList.length) {
+                tagsRepository.save(Tags.builder()
+                        .content(tagList[i-1])
+                        .build());
+            }
+            String tmp = String.valueOf(i);
+            Long userId = userRepository.save(User.builder()
+                    .name(tmp)
+                    .email(tmp)
+                    .picture(tmp)
+                    .build()).getId();
+            Long postsId = postsRepository.save(Posts.builder()
+                    .userId(userId)
+                    .description(tmp)
+                    .thumbnailName(tmp)
+                    .videoName(tmp)
+                    .build()).getId();
+            if(idx>3) {
+                idx = 0;
+            }
+            postsTagsRepository.save(PostsTags.builder()
+                    .postsId(postsId)
+                    .tagsId((long) (idx++))
+                    .build());
 
+            if(i%2 == 0 && i<last_posts_id) {
+                responseDtoList.add(PostsAllResponseDto.builder()
+                        .authorName(tmp)
+                        .postsLike(0)
+                        .thumbnailName(tmp)
+                        .views(0)
+                        .authorId(userId)
+                        .postsId(postsId)
+                        .build());
+            }
+        }
+
+        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search/"+last_posts_id;
+
+        //when
+        mvc.perform(get(url))
+                .andDo(print())
+                .andExpect(status().isOk())
+                //then
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(responseDtoList)));
     }
+
+
+
 
 }
