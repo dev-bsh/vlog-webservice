@@ -6,6 +6,7 @@ import com.maen.vlogwebserviceserver.service.posts.MediaService;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
 import com.maen.vlogwebserviceserver.web.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.jcodec.api.JCodecException;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class PostsApiController {
 
     // posts 저장 multipart/form-data
     @PostMapping("api/v1/posts")
-    public Long save(@ModelAttribute PostsSaveRequestDto postsSaveRequestDto) throws IOException {
+    public Long save(@ModelAttribute PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
        return postsService.save(postsSaveRequestDto);
     }
 

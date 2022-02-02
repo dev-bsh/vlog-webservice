@@ -3,21 +3,20 @@ package com.maen.vlogwebserviceserver.service.posts;
 
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
-import net.bramp.ffmpeg.FFmpeg;
-import net.bramp.ffmpeg.FFmpegExecutor;
-import net.bramp.ffmpeg.FFprobe;
-import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import org.apache.commons.io.IOUtils;
+import org.jcodec.api.FrameGrab;
+import org.jcodec.api.JCodecException;
+import org.jcodec.common.io.IOUtils;
+import org.jcodec.common.model.Picture;
+import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -38,14 +37,9 @@ public class MediaService {
     @Value("${thumbnail.file.format}")
     private String THUMBNAIL_FORMAT;
 
-    @Value("${ffmpeg.file.path}")
-    private String FFMPEG_FILE_PATH;
-
-    @Value("${ffprobe.file.path}")
-    private String FFPROBE_FILE_PATH;
 
     //영상 파일 저장
-    public void save(PostsSaveRequestDto postsSaveRequestDto) throws IOException {
+    public void save(PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
         //비디오 및 썸네일 폴더 생성
         File videoDirectory = new File(VIDEO_FILE_PATH);
         File thumbnailDirectory = new File(THUMBNAIL_FILE_PATH);
@@ -53,31 +47,17 @@ public class MediaService {
         thumbnailDirectory.mkdirs();
 
         //파일 저장
-        String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getOriginalFilename();
+        String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getName();
         postsSaveRequestDto.getVideo().transferTo(new File(VIDEO_FILE_PATH+videoName));
 
-        //MP4 파일이 아닌경우 변환
-        StringTokenizer st = new StringTokenizer(videoName,".");
-        String videoNameExceptFormat = st.nextToken();
-        String videoFormat = st.nextToken();
-        if(!videoFormat.equals("mp4")) {
-            String convertedVideoName = fileToMp4(videoNameExceptFormat, videoFormat);
-            //변환 후 기존파일 삭제
-            File originalVideo = new File(VIDEO_FILE_PATH+videoName);
-            originalVideo.delete();
-            //변환 된 포맷을 포함한 이름으로 변경
-            videoName = convertedVideoName;
-        }
-
         //썸네일 생성
-        String thumbnailName = makeThumbnailByFFmpeg(videoName, videoNameExceptFormat);
+        String thumbnailName = makeThumbnail(videoName);
         postsSaveRequestDto.setVideoName(videoName);
         postsSaveRequestDto.setThumbnailName(thumbnailName);
     }
 
     //영상파일 스트리밍 재생
     public ResponseEntity<ResourceRegion> findVideoByName(HttpHeaders httpHeaders, String videoName) throws Exception {
-
         UrlResource video = new UrlResource("file:"+VIDEO_FILE_PATH+videoName);
         ResourceRegion resourceRegion;
         final long chunkSize = 1000000L;
@@ -104,22 +84,16 @@ public class MediaService {
     }
 
     //썸네일 생성
-    public String makeThumbnailByFFmpeg(String videoName, String videoNameExceptFormat) throws IOException {
+    public String makeThumbnail(String videoName) throws IOException, JCodecException {
+        File source = new File(VIDEO_FILE_PATH+videoName);
+        StringTokenizer st = new StringTokenizer(videoName,".");
+        String thumbnailName = st.nextToken()+"."+THUMBNAIL_FORMAT;
 
-        FFmpeg ffmpeg = new FFmpeg(FFMPEG_FILE_PATH);
-        FFprobe ffprobe = new FFprobe(FFPROBE_FILE_PATH);
-        String thumbnailName = videoNameExceptFormat+"."+THUMBNAIL_FORMAT;
-
-        FFmpegBuilder builder = new FFmpegBuilder()
-                .overrideOutputFiles(true)
-                .setInput(VIDEO_FILE_PATH+videoName)
-                .addExtraArgs("-ss","00:00:00")
-                .addOutput(THUMBNAIL_FILE_PATH+thumbnailName)
-                    .setFrames(1)
-                    .done();
-
-        FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
-        executor.createJob(builder).run();
+        // 0프레임 기준 썸네일 생성
+        int frameNumber = 0;
+        Picture picture = FrameGrab.getFrameFromFile(source, frameNumber);
+        BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
+        ImageIO.write(bufferedImage, THUMBNAIL_FORMAT, new File(THUMBNAIL_FILE_PATH+thumbnailName));
 
         return thumbnailName;
     }
@@ -134,28 +108,4 @@ public class MediaService {
                 .body(imageBytes);
     }
 
-    //영상 파일 MP4로 변환
-    public String fileToMp4(String videoNameExceptFormat, String originalVideoFormat) throws IOException {
-        FFmpeg ffmpeg = new FFmpeg(FFMPEG_FILE_PATH);
-        FFprobe ffprobe = new FFprobe(FFPROBE_FILE_PATH);
-        String originalVideoName = videoNameExceptFormat+"."+originalVideoFormat;
-        String convertedVideoName = videoNameExceptFormat+"."+VIDEO_FILE_FORMAT;
-
-        FFmpegBuilder builder = new FFmpegBuilder()
-                .setInput(VIDEO_FILE_PATH+originalVideoName)
-                .overrideOutputFiles(true)
-                .addOutput(VIDEO_FILE_PATH+convertedVideoName)
-                    .setFormat(VIDEO_FILE_FORMAT)
-                    .setVideoCodec("libx264")
-                    .disableSubtitle()
-                    .setAudioChannels(2)
-                    .setVideoBitRate(1464800)
-                    .setStrict(FFmpegBuilder.Strict.EXPERIMENTAL)
-                    .done();
-
-        FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
-        executor.createJob(builder).run();
-
-        return convertedVideoName;
-    }
 }
