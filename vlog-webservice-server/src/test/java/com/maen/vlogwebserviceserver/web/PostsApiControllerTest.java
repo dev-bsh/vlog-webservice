@@ -7,7 +7,6 @@ import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.posts.*;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
-import com.maen.vlogwebserviceserver.service.comments.CommentsService;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
 import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
@@ -24,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,9 +55,6 @@ public class PostsApiControllerTest {
     private CommentsRepository commentsRepository;
 
     @Autowired
-    private CommentsService commentsService;
-
-    @Autowired
     private PostsService postsService;
 
 
@@ -64,15 +62,13 @@ public class PostsApiControllerTest {
     private MockMvc mvc;
 
 
-
     @AfterEach
     public void tearDown() {
+        postsTagsRepository.deleteAll();
         commentsRepository.deleteAll();
         postsRepository.deleteAll();
-        postsTagsRepository.deleteAll();
         tagsRepository.deleteAll();
         userRepository.deleteAll();
-
     }
 
 
@@ -160,6 +156,12 @@ public class PostsApiControllerTest {
         String userName = "테스터";
         String userPic = "프로필";
         String email = "이메일";
+        List<String> expectedTag = new ArrayList<>();
+        expectedTag.add("#여행");
+        expectedTag.add("#운동");
+        expectedTag.add("#일상");
+
+
         MockMultipartFile multipartFile = new MockMultipartFile("video","test.mp4", "video/mp4",new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         int lastSavedPostsId = 16;
@@ -185,12 +187,13 @@ public class PostsApiControllerTest {
                         .authorName(userName)
                         .views(posts.getViews())
                         .thumbnailName(posts.getThumbnailName())
+                        .tags(expectedTag)
                         .postsLike(0)
                         .build());
             }
         }
 
-        String url = "http://localhost:8080/api/v1/posts";
+        String url = "http://localhost:8080/api/v1/posts/recent";
 
         //when
         mvc.perform(get(url))
@@ -208,6 +211,11 @@ public class PostsApiControllerTest {
         String userName = "테스터";
         String userPic = "프로필";
         String email = "이메일";
+        List<String> expectedTag = new ArrayList<>();
+        expectedTag.add("#여행");
+        expectedTag.add("#운동");
+        expectedTag.add("#일상");
+
         MockMultipartFile multipartFile = new MockMultipartFile("video","test.mp4", "video/mp4",new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         int lastSavedPostsId = 13;
@@ -233,12 +241,13 @@ public class PostsApiControllerTest {
                         .authorName(userName)
                         .views(posts.getViews())
                         .thumbnailName(posts.getThumbnailName())
+                        .tags(expectedTag)
                         .postsLike(0)
                         .build());
             }
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+lastReadPostsId;
+        String url = "http://localhost:8080/api/v1/posts/"+lastReadPostsId+"/recent";
 
         //when
         mvc.perform(get(url))
@@ -264,13 +273,13 @@ public class PostsApiControllerTest {
         String email = "이메일";
 
         for(int i = 1; i < lateSavedCommentsId; i++) {
-            userRepository.save(User.builder()
+            Long userId = userRepository.save(User.builder()
                     .name(userName)
                     .picture(userPic)
                     .email(email)
-                    .build());
+                    .build()).getId();
             commentsRepository.save(Comments.builder()
-                    .userId((long) i)
+                    .userId(userId)
                     .postsId(postsId)
                     .content(String.valueOf(i))
                     .build());
@@ -307,13 +316,13 @@ public class PostsApiControllerTest {
         String email = "이메일";
 
         for(int i = 1; i < lateSavedCommentsId; i++) {
-            userRepository.save(User.builder()
+            Long userId = userRepository.save(User.builder()
                     .name(userName)
                     .picture(userPic)
                     .email(email)
-                    .build());
+                    .build()).getId();
             commentsRepository.save(Comments.builder()
-                    .userId((long) i)
+                    .userId(userId)
                     .postsId(postsId)
                     .content(String.valueOf(i))
                     .build());
@@ -346,13 +355,16 @@ public class PostsApiControllerTest {
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
 
         int idx = 0;
-        for(int i = 1; i <= 12; i++) {
-            if(i-1<tagList.length) {
+        for(int i = 0; i <= 12; i++) {
+            if(idx>=tagList.length) {
+                idx = 0;
+            }
+            if(i<tagList.length) {
                 tagsRepository.save(Tags.builder()
-                        .content(tagList[i-1])
+                        .content(tagList[i])
                         .build());
             }
-            String tmp = String.valueOf(i);
+            String tmp = String.valueOf(i+1);
             Long userId = userRepository.save(User.builder()
                     .name(tmp)
                     .email(tmp)
@@ -364,27 +376,26 @@ public class PostsApiControllerTest {
                     .thumbnailName(tmp)
                     .videoName(tmp)
                     .build()).getId();
-            if(idx>3) {
-                idx = 0;
-            }
             postsTagsRepository.save(PostsTags.builder()
                     .postsId(postsId)
-                    .tagsId((long) (idx++))
+                    .tagsId((long) idx+1)
                     .build());
-
-            if(i%2 == 0) {
+            // 기대 리턴 Dto = "운동"태그가 들어간 게시물
+            if(tagList[idx].contains("운동")) {
                 responseDtoList.add(PostsAllResponseDto.builder()
                         .authorName(tmp)
                         .postsLike(0)
                         .thumbnailName(tmp)
                         .views(0)
+                        .tags(Collections.singletonList("#"+tagList[idx]))
                         .authorId(userId)
                         .postsId(postsId)
                         .build());
             }
+            idx++;
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search";
+        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search/recent";
 
         //when
         mvc.perform(get(url))
@@ -402,13 +413,16 @@ public class PostsApiControllerTest {
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         long last_posts_id = 6;
         int idx = 0;
-        for(int i = 1; i <= 12; i++) {
-            if(i-1<tagList.length) {
+        for(int i = 0; i <= 12; i++) {
+            if(idx>=tagList.length) {
+                idx = 0;
+            }
+            if(i<tagList.length) {
                 tagsRepository.save(Tags.builder()
-                        .content(tagList[i-1])
+                        .content(tagList[i])
                         .build());
             }
-            String tmp = String.valueOf(i);
+            String tmp = String.valueOf(i+1);
             Long userId = userRepository.save(User.builder()
                     .name(tmp)
                     .email(tmp)
@@ -420,27 +434,26 @@ public class PostsApiControllerTest {
                     .thumbnailName(tmp)
                     .videoName(tmp)
                     .build()).getId();
-            if(idx>3) {
-                idx = 0;
-            }
             postsTagsRepository.save(PostsTags.builder()
                     .postsId(postsId)
-                    .tagsId((long) (idx++))
+                    .tagsId((long) (idx+1))
                     .build());
 
-            if(i%2 == 0 && i<last_posts_id) {
+            if(tagList[idx].contains("운동") && i<last_posts_id) {
                 responseDtoList.add(PostsAllResponseDto.builder()
                         .authorName(tmp)
                         .postsLike(0)
                         .thumbnailName(tmp)
                         .views(0)
+                        .tags(Collections.singletonList("#"+tagList[idx]))
                         .authorId(userId)
                         .postsId(postsId)
                         .build());
             }
+            idx++;
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search/"+last_posts_id;
+        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search/"+last_posts_id+"/recent";
 
         //when
         mvc.perform(get(url))
