@@ -39,7 +39,7 @@ public class TagsService {
         }
     }
 
-    public String findByPostsId(Long postsId) {
+    public List<String> findByPostsId(Long postsId) {
         List<PostsTags> postsTags = postsTagsRepository.findByPostsId(postsId);
         List<Long> tagsIds = new ArrayList<>();
         for(PostsTags postTag : postsTags) {
@@ -47,10 +47,10 @@ public class TagsService {
         }
 
         List<Tags> tagsList = tagsRepository.findAllById(tagsIds);
-        String tags ="";
+        List<String> tags = new ArrayList<>();
 
         for(Tags tag : tagsList) {
-            tags += tag.contentToString();
+            tags.add(tag.getContent());
         }
         return tags;
     }
