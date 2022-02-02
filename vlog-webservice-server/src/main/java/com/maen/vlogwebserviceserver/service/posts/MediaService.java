@@ -47,7 +47,7 @@ public class MediaService {
         thumbnailDirectory.mkdirs();
 
         //파일 저장
-        String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getName();
+        String videoName = UUID.randomUUID()+"_"+postsSaveRequestDto.getVideo().getOriginalFilename();
         postsSaveRequestDto.getVideo().transferTo(new File(VIDEO_FILE_PATH+videoName));
 
         //썸네일 생성
