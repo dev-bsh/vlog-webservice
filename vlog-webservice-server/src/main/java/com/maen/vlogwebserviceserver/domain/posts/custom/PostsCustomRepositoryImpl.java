@@ -1,6 +1,7 @@
 package com.maen.vlogwebserviceserver.domain.posts.custom;
 
 import com.maen.vlogwebserviceserver.domain.posts.Posts;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +22,20 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
     private final int nextPostsListSize = 12;
 
     @Override
-    public List<Posts> findAllInMainPage(Long lastPostId) {
+    public List<Posts> findAllInMainPage(Long lastPostId, String orderType) {
 
         return jpaQueryFactory
                 .selectFrom(posts)
                 .where(
                         ltPostsId(lastPostId)
                 )
-                .orderBy(posts.id.desc())
+                .orderBy(orderByType(orderType))
                 .limit(nextPostsListSize)
                 .fetch();
     }
 
     @Override
-    public List<Posts> findAllByTag(String tag, Long lastPostId) {
+    public List<Posts> findAllByTag(String tag, Long lastPostId, String orderType) {
 
         return jpaQueryFactory.select(posts)
                 .from(posts)
@@ -44,7 +45,7 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
                         tags.content.contains(tag),
                         ltPostsId(lastPostId)
                 )
-                .orderBy(posts.id.desc())
+                .orderBy(orderByType(orderType))
                 .limit(nextPostsListSize)
                 .fetch();
     }
@@ -54,6 +55,15 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
             return null;
         }
         return posts.id.lt(postsId);
+    }
+
+    private OrderSpecifier<?> orderByType(String orderType) {
+        if(orderType.equals("popular")) {
+            return posts.views.desc();
+        }
+        else {
+            return posts.id.desc();
+        }
     }
 
 }

@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class PostsAllResponseDto {
@@ -14,15 +16,17 @@ public class PostsAllResponseDto {
     private int postsLike;
     private int views;
     private String thumbnailName;
+    private List<String> tags;
 
     @Builder
-    public PostsAllResponseDto(Long postsId, Long authorId, String authorName, int postsLike, int views, String thumbnailName) {
+    public PostsAllResponseDto(Long postsId, Long authorId, String authorName, int postsLike, int views, String thumbnailName, List<String> tags) {
         this.postsId = postsId;
         this.authorId = authorId;
         this.authorName = authorName;
         this.postsLike = postsLike;
         this.views = views;
         this.thumbnailName = thumbnailName;
+        this.tags = tags;
     }
 
 }

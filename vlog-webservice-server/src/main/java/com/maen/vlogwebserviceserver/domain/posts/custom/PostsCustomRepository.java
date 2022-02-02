@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface PostsCustomRepository {
 
-    List<Posts> findAllInMainPage(Long lastPostId);
-    List<Posts> findAllByTag(String tag, Long lastPostId);
+    List<Posts> findAllInMainPage(Long lastPostId, String orderType);
+    List<Posts> findAllByTag(String tag, Long lastPostId, String orderType);
+
 
 }

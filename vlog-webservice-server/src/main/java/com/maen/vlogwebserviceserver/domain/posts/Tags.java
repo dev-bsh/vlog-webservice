@@ -26,7 +26,7 @@ public class Tags {
         this.count = 1;
     }
 
-    public String contentToString() {
+    public String getContent() {
         return "#"+content;
     }
 

@@ -43,7 +43,7 @@ public class PostsService {
         // 1.posts 불러오기  2.유저이름 불러오기 3.태그 불러오기 4.좋아요 불러오기 5. 댓글 수 불러오기 5.dto 반환
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         User user = userRepository.getById(posts.getUserId());
-        String tags = tagsService.findByPostsId(posts.getId());
+        List<String> tags = tagsService.findByPostsId(posts.getId());
         int postLike = postsLikeRepository.countByPostsId(posts.getId());
         int totalCommentsCount = commentsRepository.countByPostsId(posts.getId());
         // 조회수 증가
@@ -59,19 +59,21 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsAllResponseDto> findAllByParams(String tag, Long last_post_id) {
+    public List<PostsAllResponseDto> findAllByParams(String tag, Long last_post_id, String orderType) {
         List<Posts> postsList;
+
         if(tag == null) {
-            postsList = postsRepository.findAllInMainPage(last_post_id);
+            postsList = postsRepository.findAllInMainPage(last_post_id, orderType);
         }
         else {
-            postsList = postsRepository.findAllByTag(tag, last_post_id);
+            postsList = postsRepository.findAllByTag(tag, last_post_id, orderType);
         }
 
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Posts posts : postsList) {
             User user = userRepository.findById(posts.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당 게시물 작성자가 없습니다. id ="+posts.getUserId()));
             int postsLike = postsLikeRepository.countByPostsId(posts.getId());
+            List<String> tags = tagsService.findByPostsId(posts.getId());
             responseDtoList.add(PostsAllResponseDto.builder()
                     .postsId(posts.getId())
                     .authorId(user.getId())
@@ -79,6 +81,7 @@ public class PostsService {
                     .postsLike(postsLike)
                     .views(posts.getViews())
                     .thumbnailName(posts.getThumbnailName())
+                    .tags(tags)
                     .build());
         }
         return responseDtoList;

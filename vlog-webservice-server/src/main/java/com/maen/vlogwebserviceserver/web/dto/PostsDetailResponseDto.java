@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class PostsDetailResponseDto {
     private Long authorId;
     private String authorName;
     private String description;
-    private String tags;
+    private List<String> tags;
     private String videoName;
     private int views;
     private int postsLike;
@@ -24,7 +26,7 @@ public class PostsDetailResponseDto {
 
 
     @Builder
-    public PostsDetailResponseDto(Posts posts, User user, String tags, int postsLike, int totalCommentsCount) {
+    public PostsDetailResponseDto(Posts posts, User user, List<String> tags, int postsLike, int totalCommentsCount) {
         this.postsId = posts.getId();
         this.description = posts.getDescription();
         this.views = posts.getViews();
