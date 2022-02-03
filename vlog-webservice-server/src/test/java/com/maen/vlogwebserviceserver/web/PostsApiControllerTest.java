@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maen.vlogwebserviceserver.domain.comments.Comments;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.posts.*;
+import com.maen.vlogwebserviceserver.domain.posts.custom.PostsCustomRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
@@ -12,11 +13,14 @@ import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class PostsApiControllerTest {
 
@@ -57,13 +61,14 @@ public class PostsApiControllerTest {
     @Autowired
     private PostsService postsService;
 
-
     @Autowired
     private MockMvc mvc;
 
+    @LocalServerPort
+    private int port;
 
     @AfterEach
-    public void tearDown() {
+    public void tearDown() throws Exception{
         postsTagsRepository.deleteAll();
         commentsRepository.deleteAll();
         postsRepository.deleteAll();
@@ -78,8 +83,8 @@ public class PostsApiControllerTest {
         String description = "설명";
         String tags = "#여행#일상#운동";
         Long userId = 1L;
-        MockMultipartFile multipartFile = new MockMultipartFile("video","test.mp4", "video/mp4",new FileInputStream("C:\\Users\\Bang\\Desktop\\test.mp4"));
-        String url = "http://localhost:8080/api/v1/posts";
+        MockMultipartFile multipartFile = new MockMultipartFile("video","kk.mp4", "video/mp4",new FileInputStream("C:\\Users\\Bang\\Desktop\\kk.mp4"));
+        String url = "http://localhost:"+port+"/api/v1/posts";
         tagsRepository.save(Tags.builder()
                 .content("여행")
                 .build());
@@ -140,7 +145,7 @@ public class PostsApiControllerTest {
                 .picture(picture)
                 .build());
 
-        String url = "http://localhost:8080/api/v1/posts/"+postsId+"/detail";
+        String url = "http://localhost:"+port+"/api/v1/posts/"+postsId+"/detail";
 
         //then
         mvc.perform(get(url))
@@ -193,7 +198,7 @@ public class PostsApiControllerTest {
             }
         }
 
-        String url = "http://localhost:8080/api/v1/posts/recent";
+        String url = "http://localhost:"+port+"/api/v1/posts/recent";
 
         //when
         mvc.perform(get(url))
@@ -247,7 +252,7 @@ public class PostsApiControllerTest {
             }
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+lastReadPostsId+"/recent";
+        String url = "http://localhost:"+port+"/api/v1/posts/"+lastReadPostsId+"/recent";
 
         //when
         mvc.perform(get(url))
@@ -292,7 +297,7 @@ public class PostsApiControllerTest {
             }
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+postsId+"/comments";
+        String url = "http://localhost:"+port+"/api/v1/posts/"+postsId+"/comments";
 
         //when
         mvc.perform(get(url))
@@ -335,7 +340,7 @@ public class PostsApiControllerTest {
             }
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+postsId+"/comments/"+lastReadCommentsId;
+        String url = "http://localhost:"+port+"/api/v1/posts/"+postsId+"/comments/"+lastReadCommentsId;
 
         //when
         mvc.perform(get(url))
@@ -395,7 +400,7 @@ public class PostsApiControllerTest {
             idx++;
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search/recent";
+        String url = "http://localhost:"+port+"/api/v1/posts/"+tag+"/search/recent";
 
         //when
         mvc.perform(get(url))
@@ -453,7 +458,7 @@ public class PostsApiControllerTest {
             idx++;
         }
 
-        String url = "http://localhost:8080/api/v1/posts/"+tag+"/search/"+last_posts_id+"/recent";
+        String url = "http://localhost:"+port+"/api/v1/posts/"+tag+"/search/"+last_posts_id+"/recent";
 
         //when
         mvc.perform(get(url))

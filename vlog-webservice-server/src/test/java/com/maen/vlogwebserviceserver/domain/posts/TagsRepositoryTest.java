@@ -26,7 +26,7 @@ public class TagsRepositoryTest {
     @Test
     public void 태그저장_불러오기() {
         //given
-        String content = "#운동";
+        String content = "운동";
         tagsRepository.save(Tags.builder()
                 .content(content)
                 .build());
@@ -36,7 +36,7 @@ public class TagsRepositoryTest {
 
         //then
         Tags tags = tagsList.get(0);
-        assertThat(tags.getContent()).isEqualTo(content);
+        assertThat(tags.getContent()).isEqualTo("#"+content);
     }
 
 }
