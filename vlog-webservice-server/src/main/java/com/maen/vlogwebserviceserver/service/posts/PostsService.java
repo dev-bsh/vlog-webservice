@@ -38,7 +38,7 @@ public class PostsService {
         return postsId;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PostsDetailResponseDto findById(Long id) {
         // 1.posts 불러오기  2.유저이름 불러오기 3.태그 불러오기 4.좋아요 불러오기 5. 댓글 수 불러오기 5.dto 반환
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
