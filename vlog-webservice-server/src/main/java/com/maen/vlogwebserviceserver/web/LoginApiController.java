@@ -17,16 +17,15 @@ public class LoginApiController {
     private final LoginService loginService;
 
     @GetMapping("/api/v1/login/{provider}")
-    public String loginGoogle(@PathVariable String provider) {
+    public String login(@PathVariable String provider) {
         StringBuilder uri = loginService.getAuthorizationCode(provider);
         return "redirect:"+uri;
     }
 
     @GetMapping("/api/v1/jwt/{provider}")
     public ResponseEntity<LoginResponseDto> getToken(@PathVariable String provider, @RequestParam String code) {
-        LoginResponseDto responseDto = loginService.login(provider,code);
+        LoginResponseDto responseDto = loginService.login(provider, code);
         return ResponseEntity.ok().body(responseDto);
     }
-
 
 }

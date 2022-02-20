@@ -85,9 +85,12 @@ public class LoginService {
 
     private MultiValueMap<String, String> oauthTokenRequest(OAuthProvider provider, String code) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("code",code);
-        formData.add("grant_type","authorization_code");
-        formData.add("redirect_uri",provider.getRedirectUri());
+        formData.add("code", code);
+        formData.add("grant_type", "authorization_code");
+        formData.add("redirect_uri", provider.getRedirectUri());
+        //카카오 로그인 key는 body에 추가
+        formData.add("client_id", provider.getClientId());
+        formData.add("client_secret", provider.getClientSecret());
         return formData;
     }
 
