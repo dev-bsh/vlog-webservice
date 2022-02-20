@@ -19,24 +19,51 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
 
     private final JPAQueryFactory jpaQueryFactory;
     //한번에 불러오는 posts 개수
-    private final int nextPostsListSize = 12;
+    private final int limitSize = 12;
 
+    // 인기순정렬 메인화면
     @Override
-    public List<Posts> findListInMainPage(Long lastPostId, String orderType) {
+    public List<Posts> findPopularListInMainPage(Integer pageNumber) {
+        return jpaQueryFactory
+                .selectFrom(posts)
+                .orderBy(posts.views.desc())
+                .limit(limitSize)
+                .offset(pageNumber * limitSize)
+                .fetch();
+    }
 
+    // 인기순정렬 검색시
+    @Override
+    public List<Posts> findPopularListByTagSearch(String tag, Integer pageNumber) {
+        return jpaQueryFactory
+                .selectFrom(posts)
+                .from(posts)
+                .join(postsTags).on(posts.id.eq(postsTags.postsId))
+                .join(tags).on(postsTags.tagsId.eq(tags.id))
+                .where(
+                        tags.content.contains(tag)
+                )
+                .orderBy(posts.views.desc())
+                .limit(limitSize)
+                .offset(pageNumber * limitSize)
+                .fetch();
+    }
+
+    // 최신순정렬 메인화면
+    @Override
+    public List<Posts> findRecentListInMainPage(Long lastPostId) {
         return jpaQueryFactory
                 .selectFrom(posts)
                 .where(
                         ltPostsId(lastPostId)
                 )
-                .orderBy(orderByType(orderType))
-                .limit(nextPostsListSize)
+                .orderBy(posts.id.desc())
+                .limit(limitSize)
                 .fetch();
     }
-
+    //최신순 정렬 검색시
     @Override
-    public List<Posts> findListByTagSearch(String tag, Long lastPostId, String orderType) {
-
+    public List<Posts> findRecentListByTagSearch(String tag, Long lastPostId) {
         return jpaQueryFactory.select(posts)
                 .from(posts)
                 .join(postsTags).on(posts.id.eq(postsTags.postsId))
@@ -45,8 +72,8 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
                         tags.content.contains(tag),
                         ltPostsId(lastPostId)
                 )
-                .orderBy(orderByType(orderType))
-                .limit(nextPostsListSize)
+                .orderBy(posts.id.desc())
+                .limit(limitSize)
                 .fetch();
     }
 
@@ -55,15 +82,6 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
             return null;
         }
         return posts.id.lt(postsId);
-    }
-
-    private OrderSpecifier<?> orderByType(String orderType) {
-        if(orderType.equals("popular")) {
-            return posts.views.desc();
-        }
-        else {
-            return posts.id.desc();
-        }
     }
 
 }

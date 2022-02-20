@@ -22,8 +22,6 @@ public class PostsApiController {
     private final PostsService postsService;
     private final MediaService mediaService;
     private final CommentsService commentsService;
-    private final String recent = "recent";
-    private final String popular = "popular";
 
     // posts 저장 multipart/form-data
     @PostMapping("api/v1/posts")
@@ -34,43 +32,43 @@ public class PostsApiController {
     // 메인화면 posts 리스트 처음 불러오기 (최신순)
     @GetMapping("api/v1/posts/recent")
     public List<PostsAllResponseDto> findRecentListInMainPage() {
-        return postsService.findListByOrderType(null,null, recent);
+        return postsService.findRecentList(null,null);
     }
     // 메인화면 posts 리스트 스크롤로 불러오기 (최신순)
     @GetMapping("api/v1/posts/{last_post_id}/recent")
     public List<PostsAllResponseDto> findRecentListInMainPage(@PathVariable Long last_post_id) {
-        return postsService.findListByOrderType(null,last_post_id, recent);
+        return postsService.findRecentList(null,last_post_id);
     }
     //태그 검색 후 첫 리스트 조회 (최신순)
     @GetMapping("api/v1/posts/{tag}/search/recent")
     public List<PostsAllResponseDto> findRecentListByTagSearch(@PathVariable String tag) {
-        return postsService.findListByOrderType(tag, null, recent);
+        return postsService.findRecentList(tag, null);
     }
     //태그 검색 후 스크롤 한 다음 리스트 조회 (최신순)
     @GetMapping("api/v1/posts/{tag}/search/{last_posts_id}/recent")
     public List<PostsAllResponseDto> findRecentListByTagSearch(@PathVariable String tag, @PathVariable Long last_posts_id) {
-        return postsService.findListByOrderType(tag, last_posts_id, recent);
+        return postsService.findRecentList(tag, last_posts_id);
     }
 
     // 메인화면 posts 리스트 처음 불러오기 (인기순)
     @GetMapping("api/v1/posts/popular")
     public List<PostsAllResponseDto> findPopularListInMainPage() {
-        return postsService.findListByOrderType(null,null, popular);
+        return postsService.findPopularList(null,null);
     }
     // 메인화면 posts 리스트 스크롤로 불러오기 (인기순)
-    @GetMapping("api/v1/posts/{last_post_id}/popular")
-    public List<PostsAllResponseDto> findPopularListInMainPage(@PathVariable Long last_post_id) {
-        return postsService.findListByOrderType(null,last_post_id, popular);
+    @GetMapping("api/v1/posts/{page_number}/popular")
+    public List<PostsAllResponseDto> findPopularListInMainPage(@PathVariable Integer page_number) {
+        return postsService.findPopularList(null,page_number);
     }
     //태그 검색 후 첫 리스트 조회 (인기순)
     @GetMapping("api/v1/posts/{tag}/search/popular")
     public List<PostsAllResponseDto> findPopularListByTagSearch(@PathVariable String tag) {
-        return postsService.findListByOrderType(tag, null, popular);
+        return postsService.findPopularList(tag, null);
     }
     //태그 검색 후 스크롤 한 다음 리스트 조회 (인기순)
-    @GetMapping("api/v1/posts/{tag}/search/{last_posts_id}/popular")
-    public List<PostsAllResponseDto> findPopularListByTagSearch(@PathVariable String tag, @PathVariable Long last_posts_id) {
-        return postsService.findListByOrderType(tag, last_posts_id, popular);
+    @GetMapping("api/v1/posts/{tag}/search/{page_number}/popular")
+    public List<PostsAllResponseDto> findPopularListByTagSearch(@PathVariable String tag, @PathVariable Integer page_number) {
+        return postsService.findPopularList(tag, page_number);
     }
 
 

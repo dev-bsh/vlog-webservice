@@ -59,16 +59,32 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsAllResponseDto> findListByOrderType(String tag, Long last_post_id, String orderType) {
+    public List<PostsAllResponseDto> findRecentList(String tag, Long lastPostsId) {
         List<Posts> postsList;
-
         if(tag == null) {
-            postsList = postsRepository.findListInMainPage(last_post_id, orderType);
+            postsList = postsRepository.findRecentListInMainPage(lastPostsId);
         }
         else {
-            postsList = postsRepository.findListByTagSearch(tag, last_post_id, orderType);
+            postsList = postsRepository.findRecentListByTagSearch(tag, lastPostsId);
         }
 
+        return getPostsAllResponseDto(postsList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsAllResponseDto> findPopularList(String tag, Integer pageNumber) {
+        List<Posts> postsList;
+        if(tag == null) {
+            postsList = postsRepository.findPopularListInMainPage(pageNumber);
+        }
+        else {
+            postsList = postsRepository.findPopularListByTagSearch(tag, pageNumber);
+        }
+        return getPostsAllResponseDto(postsList);
+
+    }
+
+    public List<PostsAllResponseDto> getPostsAllResponseDto(List<Posts> postsList) {
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Posts posts : postsList) {
             User user = userRepository.findById(posts.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당 게시물 작성자가 없습니다. id ="+posts.getUserId()));
