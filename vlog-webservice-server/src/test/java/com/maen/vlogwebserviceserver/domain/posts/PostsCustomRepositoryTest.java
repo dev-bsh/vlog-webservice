@@ -59,7 +59,7 @@ public class PostsCustomRepositoryTest {
 
 
         //when
-        List<Posts> postsLists = postsRepository.findAllByTag(tag,null, "recent");
+        List<Posts> postsLists = postsRepository.findListByTagSearch(tag,null, "recent");
 
         //then
         assertThat(postsLists.size()).isEqualTo(6);

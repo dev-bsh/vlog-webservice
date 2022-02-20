@@ -22,7 +22,7 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
     private final int nextPostsListSize = 12;
 
     @Override
-    public List<Posts> findAllInMainPage(Long lastPostId, String orderType) {
+    public List<Posts> findListInMainPage(Long lastPostId, String orderType) {
 
         return jpaQueryFactory
                 .selectFrom(posts)
@@ -35,7 +35,7 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
     }
 
     @Override
-    public List<Posts> findAllByTag(String tag, Long lastPostId, String orderType) {
+    public List<Posts> findListByTagSearch(String tag, Long lastPostId, String orderType) {
 
         return jpaQueryFactory.select(posts)
                 .from(posts)

@@ -1,7 +1,6 @@
 package com.maen.vlogwebserviceserver.web;
 
-import com.maen.vlogwebserviceserver.config.auth.TokenService;
-import com.maen.vlogwebserviceserver.config.auth.dto.Token;
+import com.maen.vlogwebserviceserver.config.auth.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 @RestController
 public class TokenApiController {
-    private final TokenService tokenService;
+    private final JwtService tokenService;
 
     @GetMapping("/api/v1/token/expired")
     public String auth() {
@@ -25,10 +24,10 @@ public class TokenApiController {
 
         if (token != null && tokenService.verifyToken(token)) {
             String email = tokenService.getUid(token);
-            Token newToken = tokenService.generateToken(email, "USER");
+    //        Token newToken = tokenService.generateToken(email, "USER");
 
-            response.addHeader("Auth", newToken.getToken());
-            response.addHeader("Refresh", newToken.getRefreshToken());
+ //           response.addHeader("Auth", newToken.getToken());
+  //          response.addHeader("Refresh", newToken.getRefreshToken());
             response.setContentType("application/json;charset=UTF-8");
 
             return "REFRESH COMPLETE";

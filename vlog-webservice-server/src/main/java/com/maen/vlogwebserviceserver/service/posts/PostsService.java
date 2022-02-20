@@ -59,14 +59,14 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsAllResponseDto> findAllByParams(String tag, Long last_post_id, String orderType) {
+    public List<PostsAllResponseDto> findListByOrderType(String tag, Long last_post_id, String orderType) {
         List<Posts> postsList;
 
         if(tag == null) {
-            postsList = postsRepository.findAllInMainPage(last_post_id, orderType);
+            postsList = postsRepository.findListInMainPage(last_post_id, orderType);
         }
         else {
-            postsList = postsRepository.findAllByTag(tag, last_post_id, orderType);
+            postsList = postsRepository.findListByTagSearch(tag, last_post_id, orderType);
         }
 
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();

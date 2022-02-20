@@ -1,18 +1,16 @@
 package com.maen.vlogwebserviceserver.config.auth.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
-public class Token {
-    private String token;
+@NoArgsConstructor
+public class Jwt {
+    private String accessToken;
     private String refreshToken;
 
-    @Builder
-    public Token(String token, String refreshToken) {
-        this.token = token;
+    public Jwt(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }
