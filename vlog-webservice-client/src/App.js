@@ -1,34 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
-import {useEffect, useState} from "react";
+import GlobalStyled from "./components/styled/commonStyled/GlobalStyled";
+import GlobalWrapper from "./components/styled/commonStyled/GlobalWrapper";
 
+import Header from "./components/common/Header";
+import Main from "./components/main/Main";
+import SearchResult from "./components/search/SearchResult";
+import Channel from "./components/channel/Channel";
+import Recent from "./components/recent/Recent";
+import Upload from "./components/upload/Upload";
+import Error from "./components/common/Error";
+import VideoModal from "./components/videoModal/VideoModal";
+import { Route, Routes } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import Test from "./Test";
 
 function App() {
-  const [message, setMessage] = useState([]);
-
-  useEffect(() => {
-    fetch("api/hello")
-        .then((response) => {
-          return response.json();
-        })
-        .then(function (data) {
-          setMessage(data);
-        });
-
-  },[]);
-
   return (
-    <div className="App">
-        <form method="post" action="http://localhost:8080/api/v1/posts" encType="multipart/form-data">
-            <input multiple type="file" name="video"/>
-
-            <input type="text" name="userId"/>
-                <input type="text" name="description"/>
-                    <input type="text" name="tags"/>
-
-                        <button>submit</button>
-        </form>
-    </div>
+    <>
+      <GlobalStyled />
+      <div className="App">
+        <Provider store={store}>
+          <GlobalWrapper>
+            <Header></Header>
+            <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="channel/:userName" element={<Channel />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/recent" element={<Recent />} />
+              <Route path="/search" element={<SearchResult />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="*" element={<Error />} />
+              <Route path="/loading" element={<Test />} />
+            </Routes>
+          </GlobalWrapper>
+        </Provider>
+      </div>
+    </>
   );
 }
 
