@@ -1,7 +1,6 @@
 package com.maen.vlogwebserviceserver.domain.posts.custom;
 
 import com.maen.vlogwebserviceserver.domain.posts.Posts;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
