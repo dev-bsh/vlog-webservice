@@ -33,10 +33,11 @@ dependencies {
     implementation('org.jcodec:jcodec:0.2.5')
     implementation('org.jcodec:jcodec-javase:0.2.5')
 
-    implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+    implementation ('org.springframework.boot:spring-boot-starter-webflux')
     implementation('io.jsonwebtoken:jjwt:0.9.1')
     implementation('javax.xml.bind:jaxb-api')
     implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation ('org.springframework.boot:spring-boot-configuration-processor')
     testImplementation("org.springframework.security:spring-security-test")
 
     implementation 'com.querydsl:querydsl-jpa'
