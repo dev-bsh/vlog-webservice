@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FollowsResponseDto {
+public class UserResponseDto {
     private Long userId;
     private String name;
     private String email;
@@ -15,7 +15,7 @@ public class FollowsResponseDto {
     private int followingNumber;
 
     @Builder
-    public FollowsResponseDto(Long userId, String name, String email, String picture, int followerNumber, int followingNumber) {
+    public UserResponseDto(Long userId, String name, String email, String picture, int followerNumber, int followingNumber) {
         this.userId = userId;
         this.name = name;
         this.email = email;

@@ -4,7 +4,7 @@ import com.maen.vlogwebserviceserver.domain.user.FollowsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.web.dto.FollowsCountResponseDto;
-import com.maen.vlogwebserviceserver.web.dto.FollowsResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,23 +41,23 @@ public class FollowsService {
     }
 
     @Transactional(readOnly = true)
-    public List<FollowsResponseDto> findFollowerListByUserId(Long userId) {
+    public List<UserResponseDto> findFollowerListByUserId(Long userId) {
         List<Long> followerIds = followsRepository.findAllByFollowTargetId(userId);
         List<User> followerList = userRepository.findAllById(followerIds);
         return getAllFollowsResponseDto(followerList);
     }
 
     @Transactional(readOnly = true)
-    public List<FollowsResponseDto> findFollowingListByUserId(Long userId) {
+    public List<UserResponseDto> findFollowingListByUserId(Long userId) {
         List<Long> followingIds = followsRepository.findAllByUserId(userId);
         List<User> followingList = userRepository.findAllById(followingIds);
         return getAllFollowsResponseDto(followingList);
     }
 
-    private List<FollowsResponseDto> getAllFollowsResponseDto(List<User> userList) {
-        List<FollowsResponseDto> followsResponseDtoList = new ArrayList<>();
+    private List<UserResponseDto> getAllFollowsResponseDto(List<User> userList) {
+        List<UserResponseDto> followsResponseDtoList = new ArrayList<>();
         for (User user : userList) {
-            followsResponseDtoList.add(FollowsResponseDto.builder()
+            followsResponseDtoList.add(UserResponseDto.builder()
                     .userId(user.getId())
                     .name(user.getName())
                     .picture(user.getPicture())
