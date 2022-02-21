@@ -50,12 +50,7 @@ public class PostsApiController {
         return postsService.findRecentList(tag, last_posts_id);
     }
 
-    // 메인화면 posts 리스트 처음 불러오기 (인기순)
-    @GetMapping("api/v1/posts/popular")
-    public List<PostsAllResponseDto> findPopularListInMainPage() {
-        return postsService.findPopularList(null,null);
-    }
-    // 메인화면 posts 리스트 스크롤로 불러오기 (인기순)
+    // 메인화면 posts 리스트 불러오기 (인기순)
     @GetMapping("api/v1/posts/{page_number}/popular")
     public List<PostsAllResponseDto> findPopularListInMainPage(@PathVariable Integer page_number) {
         return postsService.findPopularList(null,page_number);
