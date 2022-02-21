@@ -3,14 +3,14 @@ package com.maen.vlogwebserviceserver.service.user;
 import com.maen.vlogwebserviceserver.domain.user.FollowsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
-import com.maen.vlogwebserviceserver.web.dto.FollowerListResponseDto;
-import com.maen.vlogwebserviceserver.web.dto.FollowingListResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsCountResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.FollowsResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,16 +41,32 @@ public class FollowsService {
     }
 
     @Transactional(readOnly = true)
-    public FollowerListResponseDto findFollowerListByUserId(Long userId) {
+    public List<FollowsResponseDto> findFollowerListByUserId(Long userId) {
         List<Long> followerIds = followsRepository.findAllByFollowTargetId(userId);
         List<User> followerList = userRepository.findAllById(followerIds);
-        return new FollowerListResponseDto(followerList);
+        return getAllFollowsResponseDto(followerList);
     }
 
     @Transactional(readOnly = true)
-    public FollowingListResponseDto findFollowingListByUserId(Long userId) {
+    public List<FollowsResponseDto> findFollowingListByUserId(Long userId) {
         List<Long> followingIds = followsRepository.findAllByUserId(userId);
         List<User> followingList = userRepository.findAllById(followingIds);
-        return new FollowingListResponseDto(followingList);
+        return getAllFollowsResponseDto(followingList);
+    }
+
+    private List<FollowsResponseDto> getAllFollowsResponseDto(List<User> userList) {
+        List<FollowsResponseDto> followsResponseDtoList = new ArrayList<>();
+        for (User user : userList) {
+            followsResponseDtoList.add(FollowsResponseDto.builder()
+                    .userId(user.getId())
+                    .name(user.getName())
+                    .picture(user.getPicture())
+                    .email(user.getEmail())
+                    .followingNumber(followsRepository.countByUserId(user.getId()))
+                    .followerNumber(followsRepository.countByFollowTargetId(user.getId()))
+                    .build()
+            );
+        }
+        return followsResponseDtoList;
     }
 }

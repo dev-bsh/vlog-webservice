@@ -1,13 +1,13 @@
 package com.maen.vlogwebserviceserver.web;
 
 import com.maen.vlogwebserviceserver.service.user.FollowsService;
-import com.maen.vlogwebserviceserver.web.dto.FollowerListResponseDto;
-import com.maen.vlogwebserviceserver.web.dto.FollowingListResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsCountResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.FollowsResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,12 +31,12 @@ public class UserApiController {
     }
 
     @GetMapping("/api/v1/user/{userId}/follower")
-    public FollowerListResponseDto getFollowerList(@PathVariable Long userId) {
+    public List<FollowsResponseDto> getFollowerList(@PathVariable Long userId) {
         return followsService.findFollowerListByUserId(userId);
     }
 
     @GetMapping("/api/v1/user/{userId}/following")
-    private FollowingListResponseDto getFollowingList(@PathVariable Long userId) {
+    private List<FollowsResponseDto> getFollowingList(@PathVariable Long userId) {
         return followsService.findFollowingListByUserId(userId);
     }
 }
