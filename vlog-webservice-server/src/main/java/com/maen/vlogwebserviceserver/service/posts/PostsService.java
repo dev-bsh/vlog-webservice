@@ -84,6 +84,12 @@ public class PostsService {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<PostsAllResponseDto> findByUserId(Long userId, Long lastPostId) {
+        List<Posts> postsList = postsRepository.findListByUserId(userId, lastPostId);
+        return getPostsAllResponseDto(postsList);
+    }
+
     public List<PostsAllResponseDto> getPostsAllResponseDto(List<Posts> postsList) {
         List<PostsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Posts posts : postsList) {
@@ -103,5 +109,4 @@ public class PostsService {
         }
         return responseDtoList;
     }
-
 }

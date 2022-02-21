@@ -76,6 +76,19 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
                 .fetch();
     }
 
+    @Override
+    public List<Posts> findListByUserId(Long userId, Long lastPostId) {
+        return jpaQueryFactory
+                .selectFrom(posts)
+                .where(
+                        posts.userId.eq(userId),
+                        ltPostsId(lastPostId)
+                )
+                .orderBy(posts.id.desc())
+                .limit(limitSize)
+                .fetch();
+    }
+
     private BooleanExpression ltPostsId(Long postsId) {
         if(postsId == null) {
             return null;

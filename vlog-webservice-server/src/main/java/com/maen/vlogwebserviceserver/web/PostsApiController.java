@@ -37,7 +37,7 @@ public class PostsApiController {
     // 메인화면 posts 리스트 스크롤로 불러오기 (최신순)
     @GetMapping("api/v1/posts/{last_post_id}/recent")
     public List<PostsAllResponseDto> findRecentListInMainPage(@PathVariable Long last_post_id) {
-        return postsService.findRecentList(null,last_post_id);
+        return postsService.findRecentList(null, last_post_id);
     }
     //태그 검색 후 첫 리스트 조회 (최신순)
     @GetMapping("api/v1/posts/{tag}/search/recent")
@@ -52,7 +52,7 @@ public class PostsApiController {
     // 메인화면 posts 리스트 불러오기 (인기순)
     @GetMapping("api/v1/posts/{page_number}/popular")
     public List<PostsAllResponseDto> findPopularListInMainPage(@PathVariable Integer page_number) {
-        return postsService.findPopularList(null,page_number);
+        return postsService.findPopularList(null, page_number);
     }
     //태그 검색 후 스크롤 한 다음 리스트 조회 (인기순)
     @GetMapping("api/v1/posts/{tag}/search/{page_number}/popular")
@@ -81,7 +81,7 @@ public class PostsApiController {
     public ResponseEntity<ResourceRegion> findVideoByName(@RequestHeader HttpHeaders httpHeaders, @PathVariable String videoName) throws Exception{
         return mediaService.findVideoByName(httpHeaders,videoName);
     }
-    // 메인화면 posts 리스트 속 썸네일 조회
+    // posts 리스트 속 썸네일 조회
     @GetMapping(value = "api/v1/posts/thumbnail/{thumbnailName}")
     public ResponseEntity<byte[]> findThumbnailByName(@PathVariable String thumbnailName) throws IOException {
         return mediaService.findThumbnailByName(thumbnailName);

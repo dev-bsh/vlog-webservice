@@ -1,9 +1,11 @@
 package com.maen.vlogwebserviceserver.web;
 
+import com.maen.vlogwebserviceserver.service.posts.PostsService;
 import com.maen.vlogwebserviceserver.service.user.FollowsService;
 import com.maen.vlogwebserviceserver.web.dto.FollowsCountResponseDto;
-import com.maen.vlogwebserviceserver.web.dto.FollowsResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,12 @@ import java.util.List;
 public class UserApiController {
 
     private final FollowsService followsService;
+    private final PostsService postsService;
+
+
+    @GetMapping("/api/v1/user/{userId}")
+    public UserResponseDto
+
 
     @PostMapping("/api/v1/follows")
     public Long saveFollow(@RequestBody FollowsSaveRequestDto requestDto) {
@@ -31,12 +39,28 @@ public class UserApiController {
     }
 
     @GetMapping("/api/v1/user/{userId}/follower")
-    public List<FollowsResponseDto> getFollowerList(@PathVariable Long userId) {
+    public List<UserResponseDto> getFollowerList(@PathVariable Long userId) {
         return followsService.findFollowerListByUserId(userId);
     }
 
     @GetMapping("/api/v1/user/{userId}/following")
-    private List<FollowsResponseDto> getFollowingList(@PathVariable Long userId) {
+    public List<UserResponseDto> getFollowingList(@PathVariable Long userId) {
         return followsService.findFollowingListByUserId(userId);
     }
+
+    @GetMapping("/api/v1/user/{userId}/posts")
+    public List<PostsAllResponseDto> getUserPosts(@PathVariable Long userId) {
+        return postsService.findByUserId(userId, null);
+    }
+
+    @GetMapping("/api/v1/user/{userId}/posts/{lastPostId}")
+    public List<PostsAllResponseDto> getUserPosts(@PathVariable Long userId, @PathVariable Long lastPostId) {
+        return postsService.findByUserId(userId, lastPostId);
+    }
+
+
+
+
+
+
 }

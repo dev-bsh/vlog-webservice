@@ -9,4 +9,5 @@ public interface PostsCustomRepository {
     List<Posts> findRecentListByTagSearch(String tag, Long lastPostsId);
     List<Posts> findPopularListInMainPage(Integer pageNumber);
     List<Posts> findPopularListByTagSearch(String tag, Integer pageNumber);
+    List<Posts> findListByUserId(Long userId, Long lastPostId);
 }
