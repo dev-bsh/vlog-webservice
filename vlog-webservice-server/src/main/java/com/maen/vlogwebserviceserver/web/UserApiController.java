@@ -2,6 +2,7 @@ package com.maen.vlogwebserviceserver.web;
 
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
 import com.maen.vlogwebserviceserver.service.user.FollowsService;
+import com.maen.vlogwebserviceserver.service.user.UserService;
 import com.maen.vlogwebserviceserver.web.dto.FollowsCountResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
@@ -17,12 +18,13 @@ public class UserApiController {
 
     private final FollowsService followsService;
     private final PostsService postsService;
-
+    private final UserService userService;
 
     @GetMapping("/api/v1/user/{userId}")
-    public UserResponseDto
-
-
+    public UserResponseDto getUser(@PathVariable Long userId) {
+        return userService.findById(userId);
+    }
+    
     @PostMapping("/api/v1/follows")
     public Long saveFollow(@RequestBody FollowsSaveRequestDto requestDto) {
         return followsService.saveFollow(requestDto);
