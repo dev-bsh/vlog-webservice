@@ -94,6 +94,7 @@ public class PostsService {
                     .postsId(posts.getId())
                     .authorId(user.getId())
                     .authorName(user.getName())
+                    .authorPicture(user.getPicture())
                     .postsLike(postsLike)
                     .views(posts.getViews())
                     .thumbnailName(posts.getThumbnailName())

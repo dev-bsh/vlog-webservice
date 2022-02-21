@@ -35,6 +35,7 @@ public class CommentsService {
             String author = userRepository.getById(comments.getUserId()).getName();
             int commentLike = commentsLikeRepository.countByCommentsId(comments.getId());
             responseDtoList.add(CommentsAllResponseDto.builder()
+                    .commentId(comments.getId())
                     .author(author)
                     .commentsLike(commentLike)
                     .contents(comments.getContent())

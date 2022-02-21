@@ -13,16 +13,18 @@ public class PostsAllResponseDto {
     private Long postsId;
     private Long authorId;
     private String authorName;
+    private String authorPicture;
     private int postsLike;
     private int views;
     private String thumbnailName;
     private List<String> tags;
 
     @Builder
-    public PostsAllResponseDto(Long postsId, Long authorId, String authorName, int postsLike, int views, String thumbnailName, List<String> tags) {
+    public PostsAllResponseDto(Long postsId, Long authorId, String authorName, String authorPicture, int postsLike, int views, String thumbnailName, List<String> tags) {
         this.postsId = postsId;
         this.authorId = authorId;
         this.authorName = authorName;
+        this.authorPicture = authorPicture;
         this.postsLike = postsLike;
         this.views = views;
         this.thumbnailName = thumbnailName;

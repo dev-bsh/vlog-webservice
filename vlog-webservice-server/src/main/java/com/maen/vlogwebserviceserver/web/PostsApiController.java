@@ -49,16 +49,10 @@ public class PostsApiController {
     public List<PostsAllResponseDto> findRecentListByTagSearch(@PathVariable String tag, @PathVariable Long last_posts_id) {
         return postsService.findRecentList(tag, last_posts_id);
     }
-
     // 메인화면 posts 리스트 불러오기 (인기순)
     @GetMapping("api/v1/posts/{page_number}/popular")
     public List<PostsAllResponseDto> findPopularListInMainPage(@PathVariable Integer page_number) {
         return postsService.findPopularList(null,page_number);
-    }
-    //태그 검색 후 첫 리스트 조회 (인기순)
-    @GetMapping("api/v1/posts/{tag}/search/popular")
-    public List<PostsAllResponseDto> findPopularListByTagSearch(@PathVariable String tag) {
-        return postsService.findPopularList(tag, null);
     }
     //태그 검색 후 스크롤 한 다음 리스트 조회 (인기순)
     @GetMapping("api/v1/posts/{tag}/search/{page_number}/popular")
