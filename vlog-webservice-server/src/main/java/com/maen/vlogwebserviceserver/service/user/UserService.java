@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -30,5 +33,22 @@ public class UserService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> searchUser(String keyword, Integer pageNumber) {
+        List<User> searchResult = userRepository.findUserByKeyword(keyword, pageNumber);
+        List<UserResponseDto> searchResultDto = new ArrayList<>();
+        for(User user : searchResult) {
+            searchResultDto.add(UserResponseDto.builder()
+                    .userId(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .picture(user.getPicture())
+                    .followerNumber(followsRepository.countByFollowTargetId(user.getId()))
+                    .followingNumber(followsRepository.countByUserId(user.getId()))
+                    .build()
+            );
+        }
+        return searchResultDto;
+    }
 
 }

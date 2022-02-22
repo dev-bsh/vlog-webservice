@@ -52,6 +52,11 @@ public class UserApiController {
         return followsService.findFollowingListByUserId(userId, lastFollowsId);
     }
 
+    @GetMapping("/api/v1/user/search/{keyword}/{pageNumber}")
+    public List<UserResponseDto> searchUser(@PathVariable String keyword, @PathVariable Integer pageNumber) {
+        return userService.searchUser(keyword, pageNumber);
+    }
+
 
 
 
