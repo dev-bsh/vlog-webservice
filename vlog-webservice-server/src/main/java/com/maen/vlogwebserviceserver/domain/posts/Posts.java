@@ -1,5 +1,6 @@
 package com.maen.vlogwebserviceserver.domain.posts;
 
+import com.maen.vlogwebserviceserver.web.dto.PostsUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,14 @@ public class Posts {
 
     public void upViews() {
         this.views++;
+    }
+
+    public void update(PostsUpdateRequestDto requestDto) {
+        if(requestDto.getVideo() != null) {
+            videoName = requestDto.getVideoName();
+            thumbnailName = requestDto.getThumbnailName();
+        }
+        description = requestDto.getDescription();
     }
 
 

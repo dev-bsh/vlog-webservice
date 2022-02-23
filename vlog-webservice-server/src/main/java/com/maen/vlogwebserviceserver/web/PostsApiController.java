@@ -28,6 +28,19 @@ public class PostsApiController {
     public Long save(@ModelAttribute PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
        return postsService.save(postsSaveRequestDto);
     }
+    // posts 수정 multipart/form-data
+    @PutMapping("api/v1/posts/{postsId}")
+    public Long update(@PathVariable Long postsId, @ModelAttribute PostsUpdateRequestDto updateRequestDto) throws JCodecException, IOException {
+        return postsService.update(postsId, updateRequestDto);
+    }
+    // posts 삭제
+    @DeleteMapping("api/v1/posts/{postsId}")
+    public Long delete(@PathVariable Long postsId) {
+        return postsService.delete(postsId);
+    }
+
+
+
 
     // 메인화면 posts 리스트 처음 불러오기 (최신순)
     @GetMapping("api/v1/posts/recent")
@@ -86,24 +99,4 @@ public class PostsApiController {
     public ResponseEntity<byte[]> findThumbnailByName(@PathVariable String thumbnailName) throws IOException {
         return mediaService.findThumbnailByName(thumbnailName);
     }
-
-
-
-
-
-
-//    @PutMapping("api/v1/posts/{id}")
-//    public Long update() {
-//
-//    }
-//
-//
-//    @DeleteMapping("api/v1/posts/{id}")
-//    public Long delete() {
-//
-//    }
-
-
-
-
 }

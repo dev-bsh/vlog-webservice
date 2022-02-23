@@ -2,6 +2,7 @@ package com.maen.vlogwebserviceserver.service.posts;
 
 
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
@@ -55,6 +56,28 @@ public class MediaService {
         postsSaveRequestDto.setVideoName(videoName);
         postsSaveRequestDto.setThumbnailName(thumbnailName);
     }
+
+    public void delete(String videoName, String thumbnailName) {
+        File video = new File(VIDEO_FILE_PATH+videoName);
+        File thumbnail = new File(THUMBNAIL_FILE_PATH+thumbnailName);
+        video.delete();
+        thumbnail.delete();
+    }
+
+    public void update(PostsUpdateRequestDto updateRequestDto, String videoName, String thumbnailName) throws IOException, JCodecException {
+        //새파일 저장
+        String newVideoName = UUID.randomUUID()+"_"+updateRequestDto.getVideo().getOriginalFilename();
+        updateRequestDto.getVideo().transferTo(new File(VIDEO_FILE_PATH+videoName));
+
+        //새썸네일 생성
+        String newThumbnailName = makeThumbnail(newVideoName);
+        updateRequestDto.setVideoName(newVideoName);
+        updateRequestDto.setThumbnailName(newThumbnailName);
+
+        //기존 파일 삭제
+        delete(videoName, thumbnailName);
+    }
+
 
     //영상파일 스트리밍 재생
     public ResponseEntity<ResourceRegion> findVideoByName(HttpHeaders httpHeaders, String videoName) throws Exception {

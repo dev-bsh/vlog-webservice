@@ -1,14 +1,14 @@
 package com.maen.vlogwebserviceserver.service.posts;
 
 import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
-import com.maen.vlogwebserviceserver.domain.posts.Posts;
-import com.maen.vlogwebserviceserver.domain.posts.PostsLikeRepository;
-import com.maen.vlogwebserviceserver.domain.posts.PostsRepository;
+import com.maen.vlogwebserviceserver.domain.posts.*;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
+import com.maen.vlogwebserviceserver.service.comments.CommentsService;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsDetailResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
+import com.maen.vlogwebserviceserver.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.JCodecException;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ public class PostsService {
     private final UserRepository userRepository;
     private final PostsLikeRepository postsLikeRepository;
     private final CommentsRepository commentsRepository;
+    private final CommentsService commentsService;
     private final TagsService tagsService;
     private final MediaService mediaService;
 
@@ -34,7 +35,7 @@ public class PostsService {
         // 1.영상 저장 및 영상&썸네일 파일 이름 지정 2.posts entity 생성 3.tag 저장
         mediaService.save(postsSaveRequestDto);
         Long postsId = postsRepository.save(postsSaveRequestDto.toEntity()).getId();
-        tagsService.save(postsSaveRequestDto.getTags(),postsId);
+        tagsService.save(postsSaveRequestDto.getTags(), postsId);
         return postsId;
     }
 
@@ -108,5 +109,29 @@ public class PostsService {
                     .build());
         }
         return responseDtoList;
+    }
+
+
+    @Transactional
+    public Long delete(Long postsId) {
+        // 1. 게시물 좋아요 삭제, 2. 게시물 태그 삭제 및 태그 카운트 다운, 3. 게시물 댓글 및 댓글 좋아요 삭제, 4. 게시물 및 파일 삭제
+        Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id ="+postsId));
+        postsLikeRepository.deleteByPostsId(postsId);
+        tagsService.deleteByPostsId(postsId);
+        commentsService.deleteByPostsId(postsId);
+        mediaService.delete(posts.getVideoName(), posts.getThumbnailName());
+        postsRepository.delete(posts);
+        return postsId;
+    }
+
+    @Transactional
+    public Long update(Long postsId, PostsUpdateRequestDto updateRequestDto) throws JCodecException, IOException {
+        Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id ="+postsId));
+        if(updateRequestDto.getVideo() != null) {
+            mediaService.update(updateRequestDto, posts.getVideoName(), posts.getThumbnailName());
+        }
+        tagsService.update(postsId, updateRequestDto.getTags());
+        posts.update(updateRequestDto);
+        return postsId;
     }
 }

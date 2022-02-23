@@ -6,6 +6,7 @@ import com.maen.vlogwebserviceserver.domain.posts.Tags;
 import com.maen.vlogwebserviceserver.domain.posts.TagsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,67 @@ public class TagsService {
         return tags;
     }
 
+    @Transactional
+    public void deleteByPostsId(Long postsId) {
+        List<PostsTags> tagsList = postsTagsRepository.findByPostsId(postsId);
+        for(PostsTags postsTags : tagsList) {
+            Tags tags = tagsRepository.findById(postsTags.getTagsId()).orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다. id ="+postsTags.getTagsId()));
+            tags.countDown();
+            if(tags.getCount() == 0) {
+                tagsRepository.delete(tags);
+            }
+        }
+        postsTagsRepository.findByPostsId(postsId);
+    }
+
+    @Transactional
+    public void update(Long postsId, String updateTags) {
+        List<PostsTags> postsTagsList = postsTagsRepository.findByPostsId(postsId);
+        List<Tags> originTagList = new ArrayList<>();
+        for(PostsTags postsTags : postsTagsList) {
+            Tags tags = tagsRepository.findById(postsTags.getTagsId()).orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다. id ="+postsTags.getTagsId()));
+            originTagList.add(tags);
+        }
+
+        StringTokenizer st = new StringTokenizer(updateTags,"#");
+        List<String> newTagList = new ArrayList<>();
+        while(st.hasMoreTokens()) {
+            newTagList.add(st.nextToken());
+        }
+
+        // 추가된 태그 저장
+        for(String newTag : newTagList) {
+            boolean isExists = false;
+            for(Tags originTag : originTagList) {
+                if(newTag.equals(originTag.getContent())){
+                    isExists = true;
+                    break;
+                }
+            }
+            if(!isExists) {
+                save(newTag, postsId);
+            }
+        }
+
+        // 제거된 태그 삭제 (카운트 감소시키고 카운트 0 이면 아에 제거)
+        for(Tags originTag : originTagList) {
+            boolean isExists = false;
+            for(String newTag : newTagList) {
+                if(originTag.getContent().equals(newTag)) {
+                    isExists = true;
+                    break;
+                }
+            }
+            if(!isExists) {
+                postsTagsRepository.deleteByTagsIdAndPostsId(originTag.getId(), postsId);
+                originTag.countDown();
+                if(originTag.getCount() == 0) {
+                    tagsRepository.delete(originTag);
+                }
+            }
+
+        }
 
 
+    }
 }

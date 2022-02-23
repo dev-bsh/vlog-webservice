@@ -1,6 +1,7 @@
 package com.maen.vlogwebserviceserver.service.comments;
 
 import com.maen.vlogwebserviceserver.domain.comments.Comments;
+import com.maen.vlogwebserviceserver.domain.comments.CommentsLike;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsLikeRepository;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
@@ -57,6 +58,17 @@ public class CommentsService {
     @Transactional
     public void delete(Long id) {
         Comments comments = commentsRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id="+id));
+        List<CommentsLike> commentsLikeList = commentsLikeRepository.findAllByCommentsId(id);
+        commentsLikeRepository.deleteAll(commentsLikeList);
         commentsRepository.delete(comments);
     }
+
+    @Transactional
+    public void deleteByPostsId(Long postsId) {
+        List<Long> commentsIds = commentsRepository.findAllByPostsId(postsId);
+        for(Long id : commentsIds) {
+            delete(id);
+        }
+    }
+
 }

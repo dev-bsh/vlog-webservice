@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface PostsTagsRepository extends JpaRepository<PostsTags, Long> {
     List<PostsTags> findByPostsId(Long postsId);
+    void deleteByTagsIdAndPostsId(Long tagsId, Long postsId);
 }
