@@ -9,14 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentsAllResponseDto {
     private Long commentId;
+    private Long authorId;
     private String author;
+    private String authorPicture;
     private String contents;
     private int commentsLike;
 
     @Builder
-    public CommentsAllResponseDto(Long commentId, String author, String contents, int commentsLike) {
+    public CommentsAllResponseDto(Long commentId, Long authorId, String author, String authorPicture, String contents, int commentsLike) {
         this.commentId = commentId;
+        this.authorId = authorId;
         this.author = author;
+        this.authorPicture = authorPicture;
         this.contents = contents;
         this.commentsLike = commentsLike;
     }

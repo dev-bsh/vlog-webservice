@@ -3,6 +3,7 @@ package com.maen.vlogwebserviceserver.service.comments;
 import com.maen.vlogwebserviceserver.domain.comments.Comments;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsLikeRepository;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
+import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.CommentsSaveRequestDto;
@@ -32,11 +33,13 @@ public class CommentsService {
         List<Comments> commentsList = commentsRepository.findAllInPostsDetail(postsId, commentsId);
         List<CommentsAllResponseDto> responseDtoList = new ArrayList<>();
         for(Comments comments : commentsList) {
-            String author = userRepository.getById(comments.getUserId()).getName();
+            User author = userRepository.findById(comments.getUserId()).orElseThrow(()-> new IllegalArgumentException("없는 사용자 입니다. id="+comments.getUserId()));
             int commentLike = commentsLikeRepository.countByCommentsId(comments.getId());
             responseDtoList.add(CommentsAllResponseDto.builder()
                     .commentId(comments.getId())
-                    .author(author)
+                    .authorId(author.getId())
+                    .author(author.getName())
+                    .authorPicture(author.getPicture())
                     .commentsLike(commentLike)
                     .contents(comments.getContent())
                     .build());
