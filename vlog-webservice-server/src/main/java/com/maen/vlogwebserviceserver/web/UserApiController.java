@@ -3,10 +3,12 @@ package com.maen.vlogwebserviceserver.web;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
 import com.maen.vlogwebserviceserver.service.user.FollowsService;
 import com.maen.vlogwebserviceserver.service.user.UserService;
+import com.maen.vlogwebserviceserver.web.dto.LikeListResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,58 +21,61 @@ public class UserApiController {
     private final PostsService postsService;
     private final UserService userService;
 
+    // 사용자 정보 조회
     @GetMapping("/api/v1/user/{userId}")
     public UserResponseDto getUser(@PathVariable Long userId) {
         return userService.findById(userId);
     }
-
+    // 팔로우 신청
     @PostMapping("/api/v1/follows")
     public Long saveFollow(@RequestBody FollowsSaveRequestDto requestDto) {
         return followsService.saveFollow(requestDto);
     }
-
-    @DeleteMapping("/api/v1/{userId}/{followTargetId}")
+    // 팔로우 해제
+    @DeleteMapping("/api/v1/follows/{userId}/{followTargetId}")
     public void deleteFollow(@PathVariable Long userId, @PathVariable Long followTargetId) {
         followsService.deleteFollow(userId, followTargetId);
     }
-
+    // 유저 팔로워 조회 첫목록
     @GetMapping("/api/v1/user/{userId}/follower")
     public List<UserResponseDto> getFollowerList(@PathVariable Long userId) {
         return followsService.findFollowerListByUserId(userId, null);
     }
+    //유저 팔로워 조회 다음목록
     @GetMapping("/api/v1/user/{userId}/follower/{lastFollowsId}")
     public List<UserResponseDto> getFollowerList(@PathVariable Long userId, @PathVariable Long lastFollowsId) {
         return followsService.findFollowerListByUserId(userId, lastFollowsId);
     }
-
+    // 유저 팔로잉 조회 첫목록
     @GetMapping("/api/v1/user/{userId}/following")
     public List<UserResponseDto> getFollowingList(@PathVariable Long userId) {
         return followsService.findFollowingListByUserId(userId, null);
     }
+    // 유저 팔로잉 조회 다음록록
     @GetMapping("/api/v1/user/{userId}/following/{lastFollowsId}")
     public List<UserResponseDto> getFollowingList(@PathVariable Long userId, @PathVariable Long lastFollowsId) {
         return followsService.findFollowingListByUserId(userId, lastFollowsId);
     }
-
+    // 키워드로 유저 검색
     @GetMapping("/api/v1/user/search/{keyword}/{pageNumber}")
     public List<UserResponseDto> searchUser(@PathVariable String keyword, @PathVariable Integer pageNumber) {
         return userService.searchUser(keyword, pageNumber);
     }
-
-
-
-
+    // 유저가 작성한 게시물 조회 첫목록
     @GetMapping("/api/v1/user/{userId}/posts")
     public List<PostsAllResponseDto> getUserPosts(@PathVariable Long userId) {
         return postsService.findByUserId(userId, null);
     }
-
+    // 유저가 작성한 게시물 조회 다음목록
     @GetMapping("/api/v1/user/{userId}/posts/{lastPostId}")
     public List<PostsAllResponseDto> getUserPosts(@PathVariable Long userId, @PathVariable Long lastPostId) {
         return postsService.findByUserId(userId, lastPostId);
     }
-
-
+    // 유저가 누른 좋아요 목록
+    @GetMapping("/api/v1/user/{userId}/like")
+    public LikeListResponseDto getUserLike(@PathVariable Long userId) {
+        return userService.findLikeById(userId);
+    }
 
 
 

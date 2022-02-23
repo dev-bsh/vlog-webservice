@@ -4,6 +4,9 @@ package com.maen.vlogwebserviceserver.service.user;
 import com.maen.vlogwebserviceserver.domain.user.FollowsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
+import com.maen.vlogwebserviceserver.service.comments.CommentsLikeService;
+import com.maen.vlogwebserviceserver.service.posts.PostsLikeService;
+import com.maen.vlogwebserviceserver.web.dto.LikeListResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final FollowsRepository followsRepository;
+    private final CommentsLikeService commentsLikeService;
+    private final PostsLikeService postsLikeService;
 
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long userId) {
@@ -51,4 +56,13 @@ public class UserService {
         return searchResultDto;
     }
 
+    @Transactional(readOnly = true)
+    public LikeListResponseDto findLikeById(Long userId) {
+        List<Long> postIds = postsLikeService.findAllPostsIdByUserId(userId);
+        List<Long> commentIds = commentsLikeService.findAllCommentsIdByUserId(userId);
+        return LikeListResponseDto.builder()
+                .userLikePostIds(postIds)
+                .userLikeCommentIds(commentIds)
+                .build();
+    }
 }
