@@ -9,6 +9,8 @@ import com.maen.vlogwebserviceserver.service.posts.PostsLikeService;
 import com.maen.vlogwebserviceserver.web.dto.LikeListResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,19 +43,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserResponseDto> searchUser(String keyword, Integer pageNumber) {
         List<User> searchResult = userRepository.findUserByKeyword(keyword, pageNumber);
-        List<UserResponseDto> searchResultDto = new ArrayList<>();
-        for(User user : searchResult) {
-            searchResultDto.add(UserResponseDto.builder()
-                    .userId(user.getId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .picture(user.getPicture())
-                    .followerNumber(followsRepository.countByFollowTargetId(user.getId()))
-                    .followingNumber(followsRepository.countByUserId(user.getId()))
-                    .build()
-            );
-        }
-        return searchResultDto;
+        return getUserResponseDtoList(searchResult);
     }
 
     @Transactional(readOnly = true)
@@ -64,5 +54,30 @@ public class UserService {
                 .userLikePostIds(postIds)
                 .userLikeCommentIds(commentIds)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> randomUser() {
+        int totalCount = (int) userRepository.count();
+        int random = (int) (Math.random() * (totalCount-5));
+        Page<User> userPage = userRepository.findAll(PageRequest.of(random,5));
+        List<User> userList = userPage.getContent();
+        return getUserResponseDtoList(userList);
+    }
+
+    public List<UserResponseDto> getUserResponseDtoList(List<User> userList) {
+        List<UserResponseDto> responseDtoList = new ArrayList<>();
+        for(User user : userList) {
+            responseDtoList.add(UserResponseDto.builder()
+                    .userId(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .picture(user.getPicture())
+                    .followerNumber(followsRepository.countByFollowTargetId(user.getId()))
+                    .followingNumber(followsRepository.countByUserId(user.getId()))
+                    .build()
+            );
+        }
+        return responseDtoList;
     }
 }

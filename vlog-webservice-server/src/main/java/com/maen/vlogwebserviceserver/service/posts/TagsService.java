@@ -4,7 +4,10 @@ import com.maen.vlogwebserviceserver.domain.posts.PostsTags;
 import com.maen.vlogwebserviceserver.domain.posts.PostsTagsRepository;
 import com.maen.vlogwebserviceserver.domain.posts.Tags;
 import com.maen.vlogwebserviceserver.domain.posts.TagsRepository;
+import com.maen.vlogwebserviceserver.web.dto.TagResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,13 +80,11 @@ public class TagsService {
             Tags tags = tagsRepository.findById(postsTags.getTagsId()).orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다. id ="+postsTags.getTagsId()));
             originTagList.add(tags);
         }
-
         StringTokenizer st = new StringTokenizer(updateTags,"#");
         List<String> newTagList = new ArrayList<>();
         while(st.hasMoreTokens()) {
             newTagList.add(st.nextToken());
         }
-
         // 추가된 태그 저장
         for(String newTag : newTagList) {
             boolean isExists = false;
@@ -97,7 +98,6 @@ public class TagsService {
                 save(newTag, postsId);
             }
         }
-
         // 제거된 태그 삭제 (카운트 감소시키고 카운트 0 이면 아에 제거)
         for(Tags originTag : originTagList) {
             boolean isExists = false;
@@ -114,9 +114,23 @@ public class TagsService {
                     tagsRepository.delete(originTag);
                 }
             }
-
         }
+    }
 
-
+    @Transactional(readOnly = true)
+    public List<TagResponseDto> randomTag() {
+        int totalCount = (int) tagsRepository.count();
+        int random = (int) (Math.random() * (totalCount-5));
+        Page<Tags> tagsPage = tagsRepository.findAll(PageRequest.of(random,5));
+        List<Tags> tagList = tagsPage.getContent();
+        List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
+        for(Tags tags : tagList) {
+            tagResponseDtoList.add(TagResponseDto.builder()
+                    .tagId(tags.getId())
+                    .content(tags.getContent())
+                    .build()
+            );
+        }
+        return tagResponseDtoList;
     }
 }

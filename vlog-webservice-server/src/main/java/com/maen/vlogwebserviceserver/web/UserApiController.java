@@ -1,14 +1,11 @@
 package com.maen.vlogwebserviceserver.web;
 
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
+import com.maen.vlogwebserviceserver.service.posts.TagsService;
 import com.maen.vlogwebserviceserver.service.user.FollowsService;
 import com.maen.vlogwebserviceserver.service.user.UserService;
-import com.maen.vlogwebserviceserver.web.dto.LikeListResponseDto;
-import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
-import com.maen.vlogwebserviceserver.web.dto.FollowsSaveRequestDto;
-import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +17,7 @@ public class UserApiController {
     private final FollowsService followsService;
     private final PostsService postsService;
     private final UserService userService;
+    private final TagsService tagsService;
 
     // 사용자 정보 조회
     @GetMapping("/api/v1/user/{userId}")
@@ -77,6 +75,16 @@ public class UserApiController {
         return userService.findLikeById(userId);
     }
 
+    // 유저 랜덤 추천
+    @GetMapping("/api/v1/recommend/user")
+    public List<UserResponseDto> randomUser() {
+        return userService.randomUser();
+    }
+    // 태그 랜덤 추천
+    @GetMapping("/api/v1/recommend/tag")
+    public List<TagResponseDto> randomTag() {
+        return tagsService.randomTag();
+    }
 
 
 
