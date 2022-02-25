@@ -1,9 +1,12 @@
 package com.maen.vlogwebserviceserver.web;
 
 import com.maen.vlogwebserviceserver.service.HelloService;
+import com.maen.vlogwebserviceserver.service.user.LoginService;
 import com.maen.vlogwebserviceserver.web.dto.HelloRequestDto;
 import com.maen.vlogwebserviceserver.web.dto.HelloResponseDto;
+import com.maen.vlogwebserviceserver.web.dto.LoginResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class HelloController {
-
 
     private final HelloService helloService;
 
@@ -38,6 +40,11 @@ public class HelloController {
     @DeleteMapping("api/hello/{id}")
     public void helloDel(@PathVariable Long id) {
         helloService.delete(id);
+    }
+
+    @GetMapping("/test")
+    public String index() {
+        return "success";
     }
 
 }
