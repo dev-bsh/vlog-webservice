@@ -71,4 +71,11 @@ public class CommentsService {
         }
     }
 
+    public void deleteByUserId(Long userId) {
+        List<Long> commentsIds = commentsRepository.findAllByUserId(userId);
+        for(Long id : commentsIds) {
+            delete(id);
+        }
+
+    }
 }

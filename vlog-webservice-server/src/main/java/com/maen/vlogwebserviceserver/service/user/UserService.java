@@ -5,7 +5,9 @@ import com.maen.vlogwebserviceserver.domain.user.FollowsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.service.comments.CommentsLikeService;
+import com.maen.vlogwebserviceserver.service.comments.CommentsService;
 import com.maen.vlogwebserviceserver.service.posts.PostsLikeService;
+import com.maen.vlogwebserviceserver.service.posts.PostsService;
 import com.maen.vlogwebserviceserver.web.dto.LikeListResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class UserService {
     private final FollowsRepository followsRepository;
     private final CommentsLikeService commentsLikeService;
     private final PostsLikeService postsLikeService;
+    private final PostsService postsService;
+    private final CommentsService commentsService;
 
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long userId) {
@@ -79,5 +83,17 @@ public class UserService {
             );
         }
         return responseDtoList;
+    }
+
+    @Transactional
+    public Long deleteUser(Long userId) {
+        // 1.게시물 삭제, 2.댓글삭제. 3.게시물 좋아요, 댓글 좋아요 삭제. 4. 유저 삭제
+        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 사용자입니다. id="+userId));
+        postsService.deleteAllByUserId(userId);
+        commentsService.deleteByUserId(userId);
+        commentsLikeService.deleteByUserId(userId);
+        postsLikeService.deleteByUserId(userId);
+        userRepository.delete(user);
+        return userId;
     }
 }

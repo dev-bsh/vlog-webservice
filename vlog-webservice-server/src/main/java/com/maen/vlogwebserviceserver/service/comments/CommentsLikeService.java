@@ -36,4 +36,8 @@ public class CommentsLikeService {
         }
         return commentIds;
     }
+
+    public void deleteByUserId(Long userId) {
+        commentsLikeRepository.deleteByUserId(userId);
+    }
 }

@@ -38,4 +38,7 @@ public class PostsLikeService {
         return postIds;
     }
 
+    public void deleteByUserId(Long userId) {
+        postsLikeRepository.deleteByUserId(userId);
+    }
 }

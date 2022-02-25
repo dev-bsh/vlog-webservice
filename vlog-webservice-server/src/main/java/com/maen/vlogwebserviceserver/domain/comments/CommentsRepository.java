@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CommentsRepository extends JpaRepository<Comments, Long>, CommentsCustomRepository {
     int countByPostsId(Long postsId);
-    List<Long> findAllByPostsId(Long postsID);
+    List<Long> findAllByPostsId(Long postsId);
+    List<Long> findAllByUserId(Long userId);
     void deleteByPostsId(Long postsId);
 }

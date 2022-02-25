@@ -24,6 +24,12 @@ public class UserApiController {
     public UserResponseDto getUser(@PathVariable Long userId) {
         return userService.findById(userId);
     }
+    // 회원 탈퇴
+    @DeleteMapping("/api/v1/user/{userId}")
+    public Long deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
+    }
+
     // 팔로우 신청
     @PostMapping("/api/v1/follows")
     public Long saveFollow(@RequestBody FollowsSaveRequestDto requestDto) {
