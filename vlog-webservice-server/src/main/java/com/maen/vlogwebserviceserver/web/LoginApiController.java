@@ -47,8 +47,8 @@ public class LoginApiController {
             String userId = tokenService.getPayload(token);
             Jwt newToken = tokenService.generateToken(userId);
 
-            response.addHeader("Auth", newToken.getAccessToken());
-            response.addHeader("Refresh", newToken.getRefreshToken());
+            response.addHeader("ACCESS_TOKEN", newToken.getAccessToken());
+            response.addHeader("REFRESH_TOKEN", newToken.getRefreshToken());
             response.setContentType("application/json;charset=UTF-8");
 
             return "REFRESH COMPLETE";
