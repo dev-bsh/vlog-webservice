@@ -65,16 +65,16 @@ public class CommentsService {
 
     @Transactional
     public void deleteByPostsId(Long postsId) {
-        List<Long> commentsIds = commentsRepository.findAllByPostsId(postsId);
-        for(Long id : commentsIds) {
-            delete(id);
+        List<Comments> commentsList = commentsRepository.findAllByPostsId(postsId);
+        for(Comments comments : commentsList) {
+            delete(comments.getId());
         }
     }
 
     public void deleteByUserId(Long userId) {
-        List<Long> commentsIds = commentsRepository.findAllByUserId(userId);
-        for(Long id : commentsIds) {
-            delete(id);
+        List<Comments> commentsList = commentsRepository.findAllByUserId(userId);
+        for(Comments comments : commentsList) {
+            delete(comments.getId());
         }
 
     }

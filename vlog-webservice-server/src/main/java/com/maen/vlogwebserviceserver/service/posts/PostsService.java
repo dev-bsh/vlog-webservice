@@ -135,11 +135,10 @@ public class PostsService {
         return postsId;
     }
 
-    @Transactional
     public void deleteAllByUserId(Long userId) {
-        List<Long> postIdList = postsRepository.findAllByUserId(userId);
-        for(Long postid : postIdList) {
-            delete(postid);
+        List<Posts> postsList = postsRepository.findAllByUserId(userId);
+        for(Posts posts : postsList) {
+            delete(posts.getId());
         }
     }
 }
