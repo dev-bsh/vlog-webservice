@@ -4,7 +4,6 @@ import com.maen.vlogwebserviceserver.config.auth.JwtService;
 import com.maen.vlogwebserviceserver.config.auth.dto.UserDto;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
