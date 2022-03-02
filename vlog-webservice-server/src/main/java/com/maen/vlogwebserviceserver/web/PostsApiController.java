@@ -24,17 +24,17 @@ public class PostsApiController {
     private final CommentsService commentsService;
 
     // posts 저장 multipart/form-data
-    @PostMapping("api/v1/posts")
+    @PostMapping("api/v2/posts")
     public Long save(@ModelAttribute PostsSaveRequestDto postsSaveRequestDto) throws IOException, JCodecException {
        return postsService.save(postsSaveRequestDto);
     }
     // posts 수정 multipart/form-data
-    @PutMapping("api/v1/posts/{postsId}")
+    @PutMapping("api/v2/posts/{postsId}")
     public Long update(@PathVariable Long postsId, @ModelAttribute PostsUpdateRequestDto updateRequestDto) throws JCodecException, IOException {
         return postsService.update(postsId, updateRequestDto);
     }
     // posts 삭제
-    @DeleteMapping("api/v1/posts/{postsId}")
+    @DeleteMapping("api/v2/posts/{postsId}")
     public Long delete(@PathVariable Long postsId) {
         return postsService.delete(postsId);
     }

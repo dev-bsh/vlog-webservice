@@ -15,22 +15,22 @@ public class LikeApiController {
     private final PostsLikeService postsLikeService;
     private final CommentsLikeService commentsLikeService;
 
-    @PostMapping("api/v1/post-like")
+    @PostMapping("api/v2/post-like")
     public int postsLikeUp(@RequestBody PostsLikeSaveRequestDto postsLikeSaveRequestDto) {
         return postsLikeService.save(postsLikeSaveRequestDto);
     }
 
-    @DeleteMapping("api/v1/post-like/{postsId}/{userId}")
+    @DeleteMapping("api/v2/post-like/{postsId}/{userId}")
     public void postsLikeCancel(@PathVariable Long postsId, @PathVariable Long userId) {
         postsLikeService.delete(postsId,userId);
     }
 
-    @PostMapping("api/v1/comment-like")
+    @PostMapping("api/v2/comment-like")
     public int commentsLikeUp(@RequestBody CommentsLikeSaveRequestDto commentsLikeSaveRequestDto) {
         return commentsLikeService.save(commentsLikeSaveRequestDto);
     }
 
-    @DeleteMapping("api/v1/comment-like/{commentsId}/{userId}")
+    @DeleteMapping("api/v2/comment-like/{commentsId}/{userId}")
     public void commentsLikeCancel(@PathVariable Long commentsId, @PathVariable Long userId) {
         commentsLikeService.delete(commentsId,userId);
     }
