@@ -31,7 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/api/**", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
+                        .antMatchers("/api/v1/**", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
+                        .antMatchers("/api/v2/**").authenticated()
                         .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(
@@ -47,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
+        configuration.addExposedHeader("ACCESS_TOKEN");
+        configuration.addExposedHeader("REFRESH_TOKEN");
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
