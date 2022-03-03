@@ -36,7 +36,7 @@ public class TagsRepositoryTest {
 
         //then
         Tags tags = tagsList.get(0);
-        assertThat(tags.getContent()).isEqualTo("#"+content);
+        assertThat(tags.getHashTagContent()).isEqualTo("#"+content);
     }
 
 }

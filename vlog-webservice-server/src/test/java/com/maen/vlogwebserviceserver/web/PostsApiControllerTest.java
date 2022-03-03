@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maen.vlogwebserviceserver.domain.comments.Comments;
 import com.maen.vlogwebserviceserver.domain.comments.CommentsRepository;
 import com.maen.vlogwebserviceserver.domain.posts.*;
-import com.maen.vlogwebserviceserver.domain.posts.custom.PostsCustomRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
 import com.maen.vlogwebserviceserver.service.posts.PostsService;
@@ -13,10 +12,8 @@ import com.maen.vlogwebserviceserver.web.dto.CommentsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsAllResponseDto;
 import com.maen.vlogwebserviceserver.web.dto.PostsSaveRequestDto;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,7 +105,7 @@ public class PostsApiControllerTest {
             Tags tag = tagsList.get(i);
             assertThat(postsTags.getPostsId()).isEqualTo(posts.getId());
             assertThat(postsTags.getTagsId()).isEqualTo(tag.getId());
-            System.out.print(tag.getContent()+" : ");
+            System.out.print(tag.getHashTagContent()+" : ");
             System.out.println(tag.getCount());
         }
 
