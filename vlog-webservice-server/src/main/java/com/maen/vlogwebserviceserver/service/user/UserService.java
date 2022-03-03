@@ -1,6 +1,7 @@
 package com.maen.vlogwebserviceserver.service.user;
 
 
+import com.maen.vlogwebserviceserver.domain.posts.Tags;
 import com.maen.vlogwebserviceserver.domain.user.FollowsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
 import com.maen.vlogwebserviceserver.domain.user.UserRepository;
@@ -64,13 +65,25 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserResponseDto> randomUser() {
         int totalCount = (int) userRepository.count();
-        if(totalCount > 5) {
-            totalCount -= 5;
+        List<Integer> numbers = new ArrayList<>();
+        int count = 0;
+        while(true) {
+            if(count >= 5 || count >= totalCount) {
+                break;
+            }
+            int random = (int) (Math.random() * totalCount);
+            if(!numbers.contains(random)) {
+                numbers.add(random);
+                count++;
+            }
         }
-        int random = (int) (Math.random() * totalCount);
-        Page<User> userPage = userRepository.findAll(PageRequest.of(random,5));
-        List<User> userList = userPage.getContent();
-        return getUserResponseDtoList(userList);
+        List<User> randomUserList = new ArrayList<>();
+        for(int i = 0; i<numbers.size(); i++) {
+            Page<User> tagsPage = userRepository.findAll(PageRequest.of(numbers.get(i),1));
+            List<User> tempList = tagsPage.getContent();
+            randomUserList.add(tempList.get(0));
+        }
+        return getUserResponseDtoList(randomUserList);
     }
 
     public List<UserResponseDto> getUserResponseDtoList(List<User> userList) {

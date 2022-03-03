@@ -27,6 +27,9 @@ public class TagsService {
         while(st.hasMoreTokens()){
             String content = st.nextToken();
             Tags tags;
+            if(content.charAt(content.length()-1) == ' ' || content.charAt(content.length()-1) == ',') {
+                content = content.substring(0, content.length()-1);
+            }
             if(!tagsRepository.existsByContent(content)){
                 tags = tagsRepository.save(Tags.builder()
                         .content(content)
@@ -54,7 +57,7 @@ public class TagsService {
         List<String> tags = new ArrayList<>();
 
         for(Tags tag : tagsList) {
-            tags.add(tag.getContent());
+            tags.add(tag.getHashTagContent());
         }
         return tags;
     }
@@ -83,7 +86,11 @@ public class TagsService {
         StringTokenizer st = new StringTokenizer(updateTags,"#");
         List<String> newTagList = new ArrayList<>();
         while(st.hasMoreTokens()) {
-            newTagList.add(st.nextToken());
+            String content = st.nextToken();
+            if(content.charAt(content.length()-1) == ' ' || content.charAt(content.length()-1) == ',') {
+                content = content.substring(0, content.length()-1);
+            }
+            newTagList.add(content);
         }
         // 추가된 태그 저장
         for(String newTag : newTagList) {
@@ -120,20 +127,35 @@ public class TagsService {
     @Transactional(readOnly = true)
     public List<TagResponseDto> randomTag() {
         int totalCount = (int) tagsRepository.count();
-        if(totalCount > 5) {
-            totalCount -= 5;
+        List<Integer> numbers = new ArrayList<>();
+        int count = 0;
+        while(true) {
+            if(count >= 5 || count >= totalCount) {
+                break;
+            }
+            int random = (int) (Math.random() * totalCount);
+            if(!numbers.contains(random)) {
+                numbers.add(random);
+                count++;
+            }
         }
-        int random = (int) (Math.random() * totalCount);
-        Page<Tags> tagsPage = tagsRepository.findAll(PageRequest.of(random,5));
-        List<Tags> tagList = tagsPage.getContent();
+
+        List<Tags> randomTagList = new ArrayList<>();
+        for(int i = 0; i<numbers.size(); i++) {
+            Page<Tags> tagsPage = tagsRepository.findAll(PageRequest.of(numbers.get(i),1));
+            List<Tags> tempList = tagsPage.getContent();
+            randomTagList.add(tempList.get(0));
+        }
+
         List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
-        for(Tags tags : tagList) {
+        for(Tags tags : randomTagList) {
             tagResponseDtoList.add(TagResponseDto.builder()
                     .tagId(tags.getId())
-                    .content(tags.getContent())
+                    .content(tags.getHashTagContent())
                     .build()
             );
         }
+
         return tagResponseDtoList;
     }
 }

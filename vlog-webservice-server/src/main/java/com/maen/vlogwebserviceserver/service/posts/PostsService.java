@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -68,7 +69,8 @@ public class PostsService {
         else {
             postsList = postsRepository.findRecentListByTagSearch(tag, lastPostsId);
         }
-
+        HashSet<Posts> set = new HashSet<>(postsList);
+        postsList = new ArrayList<>(set);
         return getPostsAllResponseDto(postsList);
     }
 
@@ -81,6 +83,8 @@ public class PostsService {
         else {
             postsList = postsRepository.findPopularListByTagSearch(tag, pageNumber);
         }
+        HashSet<Posts> set = new HashSet<>(postsList);
+        postsList = new ArrayList<>(set);
         return getPostsAllResponseDto(postsList);
 
     }
