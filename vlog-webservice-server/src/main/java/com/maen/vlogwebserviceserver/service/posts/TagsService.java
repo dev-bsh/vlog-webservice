@@ -120,7 +120,10 @@ public class TagsService {
     @Transactional(readOnly = true)
     public List<TagResponseDto> randomTag() {
         int totalCount = (int) tagsRepository.count();
-        int random = (int) (Math.random() * (totalCount-5));
+        if(totalCount > 5) {
+            totalCount -= 5;
+        }
+        int random = (int) (Math.random() * totalCount);
         Page<Tags> tagsPage = tagsRepository.findAll(PageRequest.of(random,5));
         List<Tags> tagList = tagsPage.getContent();
         List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
