@@ -73,4 +73,9 @@ public class FollowsService {
         }
         return followsResponseDtoList;
     }
+
+    public void deleteByUserId(Long userId) {
+        followsRepository.deleteByUserId(userId);
+        followsRepository.deleteByFollowTargetId(userId);
+    }
 }

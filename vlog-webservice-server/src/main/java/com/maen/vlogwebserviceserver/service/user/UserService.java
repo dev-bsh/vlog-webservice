@@ -24,6 +24,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final FollowsRepository followsRepository;
+    private final FollowsService followsService;
     private final CommentsLikeService commentsLikeService;
     private final PostsLikeService postsLikeService;
     private final PostsService postsService;
@@ -63,7 +64,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserResponseDto> randomUser() {
         int totalCount = (int) userRepository.count();
-        int random = (int) (Math.random() * (totalCount-5));
+        if(totalCount > 5) {
+            totalCount -= 5;
+        }
+        int random = (int) (Math.random() * totalCount);
         Page<User> userPage = userRepository.findAll(PageRequest.of(random,5));
         List<User> userList = userPage.getContent();
         return getUserResponseDtoList(userList);
@@ -87,12 +91,13 @@ public class UserService {
 
     @Transactional
     public Long deleteUser(Long userId) {
-        // 1.게시물 삭제, 2.댓글삭제. 3.게시물 좋아요, 댓글 좋아요 삭제. 4. 유저 삭제
+        // 1.게시물 삭제, 2.댓글삭제. 3.게시물 좋아요, 댓글 좋아요 삭제. 4. 팔로우삭제 5.유저삭제
         User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 사용자입니다. id="+userId));
         postsService.deleteAllByUserId(userId);
         commentsService.deleteByUserId(userId);
         commentsLikeService.deleteByUserId(userId);
         postsLikeService.deleteByUserId(userId);
+        followsService.deleteByUserId(userId);
         userRepository.delete(user);
         return userId;
     }
