@@ -8,10 +8,9 @@ import CloseButton from "../styled/modalStyled/CloseButton";
 import { MdClose } from "react-icons/md";
 import VideoContent from "../videoModal/VideoContent";
 import SideContent from "../videoModal/SideContent";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 
-const VideoModal = ({ isOpened, children, onClose, videoSrc, tags }) => {
+const VideoModal = ({ isOpened, children, onClose, videoSrc, tags, src }) => {
   if (!isOpened) {
     return null;
   }
@@ -36,7 +35,7 @@ const VideoModal = ({ isOpened, children, onClose, videoSrc, tags }) => {
             autoPlay
           />
         </VideoContentWrapper>
-        <SideContent isOpened={isOpened} tags={tags} />
+        <SideContent isOpened={isOpened} tags={tags} src={src} />
       </ModalStyled>
     </ModalWrapper>,
     document.getElementById("modal")

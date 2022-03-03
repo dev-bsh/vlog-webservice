@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSearch } from "../../redux/module/search";
+import { getUserSearch } from "../../redux/module/search";
 import SearchUserStyled from "../styled/searchStyled/SearchUserStyled";
 import UserBlock from "../common/UserBlock";
 import SearchResultWrapper from "../styled//searchStyled/SearchResultWrapper";
 import { Link } from "react-router-dom";
 
 const SearchUser = () => {
-  const userNameList = ["철수", "짱구", "훈이"];
+  const dispatch = useDispatch();
+  const keyword = useSelector((state) => state.search.input);
+  const userNameList = useSelector((state) => state.search.userResults);
 
   const userList = userNameList.map((user, index) => (
-    <Link to={`/channel/${user}`} key={index}>
-      <UserBlock key={index} userName={user} />
+    <Link to={`/channel/${user.name}/${user.userId}`} key={index}>
+      <UserBlock userName={user.name} src={user.picture} />
     </Link>
   ));
   return (
     <SearchUserStyled>
-      <p>Users</p>
+      Users
       <SearchResultWrapper>{userList}</SearchResultWrapper>
     </SearchUserStyled>
   );

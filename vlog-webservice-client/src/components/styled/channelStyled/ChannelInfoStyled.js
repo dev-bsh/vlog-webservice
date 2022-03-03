@@ -5,7 +5,8 @@ const ChannelInfoStyled = styled.div`
   flex-direction: row;
   align-items: center;
   width: 32em;
-  height: 16em;
+  margin-top: 5em;
+  border-bottom: 1px solid #dcdde1;
 `;
 
 export default ChannelInfoStyled;

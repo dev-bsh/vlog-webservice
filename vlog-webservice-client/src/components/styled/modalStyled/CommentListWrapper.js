@@ -4,7 +4,7 @@ const CommentsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  overflow: auto;
 `;
 
 export default CommentsWrapper;

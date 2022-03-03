@@ -12,7 +12,7 @@ const ContentInfo = () => {
       <Like />
       Like: {postDetail.postsLike}
       <MdSms />
-      Comments: {postDetail.totalCommentsSize}
+      Comments: {postDetail.totalCommentsCount}
       Views : {postDetail.views}
     </ContentInfoWrapper>
   );

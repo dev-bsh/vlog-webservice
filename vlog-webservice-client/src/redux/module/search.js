@@ -1,8 +1,9 @@
 import axios from "axios";
 // actiontypes
-export const GET_SEARCH = "GET_SEARCH";
-export const SET_INPUT = "SET_INPUT";
-export const RETURN_NULL = "RETURN_NULL";
+const GET_SEARCH = "GET_SEARCH";
+const SET_INPUT = "SET_INPUT";
+const RETURN_NULL = "RETURN_NULL";
+const GET_USER_SEARCH = "GET_USER_SEARCH";
 // action
 
 export const setInput = (input) => async (dispatch) => {
@@ -11,21 +12,45 @@ export const setInput = (input) => async (dispatch) => {
 
 export const getSearch = (keyword) => async (dispatch) => {
   if (keyword.length !== 0) {
-    const response = await axios.get(`api/v1/posts/${keyword}/search/recent`);
+    const response = await axios.get(`/api/v1/posts/${keyword}/search/recent`);
     if (response.data.length !== 0) {
-      dispatch({ type: GET_SEARCH, payload: response.data, isEmpty: false });
+      dispatch({
+        type: GET_SEARCH,
+        payload: response.data,
+        isPostEmpty: false,
+      });
     } else {
-      dispatch({ type: GET_SEARCH, payload: response.data, isEmpty: true });
+      dispatch({ type: GET_SEARCH, payload: response.data, isPostEmpty: true });
     }
   }
 };
 
+export const getUserSearch = (keyword, pageNumber) => async (dispatch) => {
+  if (keyword.length !== 0) {
+    const response = await axios.get(`/api/v1/user/search/${keyword}/0`);
+    if (response.data.length !== 0) {
+      dispatch({
+        type: GET_USER_SEARCH,
+        payload: response.data,
+        isPostEmpty: true,
+      });
+    } else {
+      dispatch({
+        type: GET_USER_SEARCH,
+        payload: response.data,
+        isPostEmpty: true,
+      });
+    }
+  }
+};
 // initialState
 
 const initialState = {
   results: [],
+  userResults: [],
   input: "",
-  isEmpty: true,
+  isPostEmpty: true,
+  isUserEmpty: true,
 };
 // reducer
 export default function reducer(state = initialState, action) {
@@ -34,7 +59,13 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         results: action.payload,
-        isEmpty: action.isEmpty,
+        isPostEmpty: action.isPostEmpty,
+      };
+    case GET_USER_SEARCH:
+      return {
+        ...state,
+        userResults: action.payload,
+        isUserEmpty: action.isUserEmpty,
       };
     case SET_INPUT:
       return {

@@ -11,10 +11,6 @@ const SearchTag = () => {
   const results = useSelector((state) => state.search.results);
   const dispatch = useDispatch();
 
-  useEffect(async () => {
-    await dispatch(getSearch(keyword));
-  }, [keyword]);
-
   const resultList = results.map((post, index) => (
     <Post key={index} post={post}></Post>
   ));

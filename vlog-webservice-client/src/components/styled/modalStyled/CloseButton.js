@@ -8,11 +8,6 @@ const CloseButton = styled.button`
   color: white;
   font-size: 2em;
   margin: 0.5em;
-
-  &:hover {
-    font-size: 2.09em;
-    transition: 500ms;
-  }
 `;
 
 export default CloseButton;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SideWrapper from "../styled/modalStyled/SideWrapper";
 import UserBlcok from "../common/UserBlock";
 import VideoDescription from "./VideoDescription";
@@ -13,33 +13,62 @@ import { useSelector, useDispatch } from "react-redux";
 import Tag from "../common/Tag";
 import TagListWrapper from "../styled/commonStyled/TagListWrapper";
 import { useNavigate } from "react-router-dom";
-const SideContent = ({ isOpened, tags }) => {
+import Cookies from "universal-cookie";
+import EtcDropDown from "../styled/modalStyled/EtcDropDown";
+import EtcButton from "../styled/modalStyled/EtcButton";
+import EditButtons from "./EditButtons";
+
+const SideContent = ({ isOpened, tags, src }) => {
+  const cookies = new Cookies();
+  const [isVisible, setIsVisible] = useState(false);
   const postDetail = useSelector((state) => state.post.postDetail);
   const navigate = useNavigate();
+  const userCookie = cookies.get("user");
+  const postsId = postDetail.postsId;
+  const [picture, setPicture] = useState("");
+
   const tagList = tags.map((tag, index) => (
     <Tag key={index} tag={tag}>
       {tag}
     </Tag>
   ));
 
+  const handleEtcClick = () => {
+    setIsVisible(!isVisible);
+  };
+
   const handleClick = (e) => {
     navigate(`/channel/${e.target.dataset.username}`);
   };
+
+  const buttonRedner = () => {
+    if (!userCookie) {
+      return null;
+    }
+    if (userCookie.userId === postDetail.authorId) {
+      return <EtcButton onClick={handleEtcClick}>...</EtcButton>;
+    }
+  };
+
   return (
     <SideWrapper>
-      <div>
+      <div
+        style={{
+          display: "flex",
+        }}
+      >
         {isOpened && (
-          <UserBlockStlyed onClick={handleClick}>
-            <UserProfileStyled
-              src=""
-              width="32px"
-              height="32px"
-              data-username={postDetail.authorName}
-            />
-            <p>{postDetail.authorName}</p>
-          </UserBlockStlyed>
+          <Link to={`/channel/${postDetail.authorName}/${postDetail.authorId}`}>
+            <UserBlock src={src} userName={postDetail.authorName} />
+          </Link>
         )}
+        {buttonRedner()}
       </div>
+
+      <EtcDropDown visible={isVisible}>
+        <EditButtons target="post" postsId={postsId} />
+      </EtcDropDown>
+
       <VideoDescription />
       <TagListWrapper>{tagList}</TagListWrapper>
       <ContentInfo />

@@ -35,7 +35,6 @@ const RecentContent = () => {
         await getMoreItem(last, items);
       } catch {
         setIsEnd(true);
-        console.log("end");
       }
 
       observer.observe(entry.target);

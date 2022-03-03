@@ -6,6 +6,7 @@ const RecommandationWrapper = styled.div`
   max-height: 400px;
 
   height: 40%;
+
   overflow: hidden;
 `;
 

@@ -5,6 +5,7 @@ a {
   text-decoration: none;
   cursor: pointer;
   color: black;
+  text-align: center;
 }
 a:visited {
   color: transparent;
@@ -32,7 +33,7 @@ p {
 }
 html {
   z-index: 1;
-  
+
 }
 .Uploader {
   transition: 500ms;

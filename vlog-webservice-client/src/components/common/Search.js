@@ -35,7 +35,7 @@ const Search = () => {
         onChange={handleKeyword}
         onKeyPress={handlePress}
       ></SearchStyled>
-      <FaSearch color="#7f8fa6" onClick={handleClick} />
+      <FaSearch color="#7f8fa6" onClick={handleClick} cursor="pointer" />
     </SearchBoxStyled>
   );
 };

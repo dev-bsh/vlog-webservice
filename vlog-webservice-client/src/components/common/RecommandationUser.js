@@ -1,22 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RecommandationContentStyled from "../styled/commonStyled/RecommandationContentStyled";
 import UserBlock from "./UserBlock";
 import { Link } from "react-router-dom";
 import RecommandTextWrapper from "../styled/commonStyled/RecommandTextWrapper";
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchRecommendUsers } from "../../redux/module/recommend";
+import axios from "axios";
 const RecommandationUser = () => {
-  const userNameList = ["철수", "짱구", "훈이"];
+  const dispatch = useDispatch();
+  const [recommendUsers, setRecommendUsers] = useState([]);
 
-  const userList = userNameList.map((user, index) => (
-    <Link to={`/channel/${user}`} key={index}>
-      <UserBlock key={index} userName={user} />
-    </Link>
-  ));
+  useEffect(async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/v1/recommend/user`
+    );
+    setRecommendUsers(response.data);
+  }, []);
+
+  const userList = () =>
+    recommendUsers.map((user, index) => (
+      <Link to={`/channel/${user.name}/${user.userId}`} key={index}>
+        <UserBlock key={index} userName={user.name} src={user.picture} />
+      </Link>
+    ));
 
   return (
     <>
       <RecommandTextWrapper>Recommnad User</RecommandTextWrapper>
-      <RecommandationContentStyled>{userList}</RecommandationContentStyled>
+      <RecommandationContentStyled>{userList()}</RecommandationContentStyled>
     </>
   );
 };

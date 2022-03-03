@@ -14,7 +14,7 @@ const LoaderWrap = styled.div`
 const Loader = () => {
   return (
     <LoaderWrap>
-      <ReactLoading type="spin" color="#353b48" />
+      <ReactLoading type="bubbles" color="#353b48" />
     </LoaderWrap>
   );
 };

@@ -1,34 +1,69 @@
 import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
-import react, { useState } from "react";
+import react, { useState, useEffect } from "react";
 import LikeStyled from "../styled/modalStyled/LikeStyled";
-import { useSelector } from "react-redux";
-const Like = () => {
-  const [isLiked, setIsLiked] = useState(false);
-  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
+import { useSelector, useDispatch } from "react-redux";
+import Cookies from "universal-cookie";
+import axios from "axios";
+import {
+  requestLike,
+  requestLikeCancel,
+  fetchLike,
+} from "../../redux/module/like";
 
-  const handleLike = (e) => {
+const Like = () => {
+  const dispatch = useDispatch();
+  const { postsId } = useSelector((state) => state.post.postDetail);
+  const likeState = useSelector((state) => state.like.isLiked);
+  const [isLiked, setIsLiked] = useState(likeState);
+  const cookies = new Cookies();
+  const isLoggedIn = cookies.get("isLoggedIn");
+  const user = cookies.get("user");
+
+  const handleLike = async (e) => {
     if (!isLoggedIn) {
       alert("로그인 후 이용가능 합니다.");
       return false;
     }
     if (!isLiked) {
+      dispatch(requestLike(postsId, user.userId));
       setIsLiked(true);
     } else {
+      dispatch(requestLikeCancel(postsId, user.userId, user.accessToken));
       setIsLiked(false);
     }
   };
-  return isLiked ? (
+
+  const compareLike = async () => {
+    if (isLoggedIn) {
+      const response = await axios.get(`/api/v1/user/${user.userId}/like`);
+      if (response.data.userLikePostIds.includes(postsId)) {
+        setIsLiked(true);
+      } else {
+        setIsLiked(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    compareLike();
+  }, [postsId]);
+
+  return (
     <>
-      <LikeStyled>
-        <MdFavorite onClick={handleLike} />
-      </LikeStyled>
-    </>
-  ) : (
-    <>
-      <LikeStyled>
-        <MdFavoriteBorder onClick={handleLike} />
-      </LikeStyled>
+      {isLiked ? (
+        <>
+          <LikeStyled>
+            <MdFavorite onClick={handleLike} />
+          </LikeStyled>
+        </>
+      ) : (
+        <>
+          <LikeStyled>
+            <MdFavoriteBorder onClick={handleLike} />
+          </LikeStyled>
+        </>
+      )}
     </>
   );
 };

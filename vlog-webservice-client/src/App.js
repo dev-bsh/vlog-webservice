@@ -8,32 +8,33 @@ import Channel from "./components/channel/Channel";
 import Recent from "./components/recent/Recent";
 import Upload from "./components/upload/Upload";
 import Error from "./components/common/Error";
-import VideoModal from "./components/videoModal/VideoModal";
+import Loading from "./components/common/Loading";
+import Edit from "./components/upload/Edit";
+import Setting from "./components/common/Setting";
 import { Route, Routes } from "react-router-dom";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
-import Test from "./Test";
 
+import Test from "./Test";
 function App() {
   return (
     <>
       <GlobalStyled />
       <div className="App">
-        <Provider store={store}>
-          <GlobalWrapper>
-            <Header></Header>
-            <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="channel/:userName" element={<Channel />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/recent" element={<Recent />} />
-              <Route path="/search" element={<SearchResult />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="*" element={<Error />} />
-              <Route path="/loading" element={<Test />} />
-            </Routes>
-          </GlobalWrapper>
-        </Provider>
+        <GlobalWrapper>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="channel/:userName/:userId" element={<Channel />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/recent" element={<Recent />} />
+            <Route path="/search" element={<SearchResult />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/loading" element={<Loading />} />
+            <Route path="/edit" element={<Edit />} />
+            <Route path="*" element={<Error />} />
+            <Route path="/setting" element={<Setting />} />
+            <Route path="/test" element={<Test />} />
+          </Routes>
+        </GlobalWrapper>
       </div>
     </>
   );
