@@ -1,6 +1,7 @@
 package com.maen.vlogwebserviceserver.service.user;
 
 
+import com.maen.vlogwebserviceserver.domain.posts.Posts;
 import com.maen.vlogwebserviceserver.domain.posts.Tags;
 import com.maen.vlogwebserviceserver.domain.user.FollowsRepository;
 import com.maen.vlogwebserviceserver.domain.user.User;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -49,6 +51,8 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserResponseDto> searchUser(String keyword, Integer pageNumber) {
         List<User> searchResult = userRepository.findUserByKeyword(keyword, pageNumber);
+        HashSet<User> set = new HashSet<>(searchResult);
+        searchResult = new ArrayList<>(set);
         return getUserResponseDtoList(searchResult);
     }
 
