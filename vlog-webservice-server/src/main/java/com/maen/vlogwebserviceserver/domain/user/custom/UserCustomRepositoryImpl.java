@@ -19,12 +19,12 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
     @Override
     public List<User> findUserByKeyword(String keyword, Integer pageNumber) {
         return jpaQueryFactory.selectFrom(user)
-                .join(follows).on(user.id.eq(follows.followTargetId))
+                .leftJoin(follows).on(user.id.eq(follows.followTargetId))
                 .where(
                         user.name.contains(keyword)
                 )
-                .orderBy(user.count().desc())
                 .limit(limitSize)
+                .orderBy(follows.id.desc())
                 .offset(pageNumber * limitSize)
                 .fetch();
     }
