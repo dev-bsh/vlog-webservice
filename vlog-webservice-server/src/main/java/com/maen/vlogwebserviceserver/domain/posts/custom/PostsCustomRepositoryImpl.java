@@ -35,7 +35,7 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
     @Override
     public List<Posts> findPopularListByTagSearch(String tag, Integer pageNumber) {
         return jpaQueryFactory
-                .selectFrom(posts)
+                .selectDistinct(posts)
                 .from(posts)
                 .join(postsTags).on(posts.id.eq(postsTags.postsId))
                 .join(tags).on(postsTags.tagsId.eq(tags.id))
@@ -63,7 +63,7 @@ public class PostsCustomRepositoryImpl implements PostsCustomRepository{
     //최신순 정렬 검색시
     @Override
     public List<Posts> findRecentListByTagSearch(String tag, Long lastPostId) {
-        return jpaQueryFactory.select(posts)
+        return jpaQueryFactory.selectDistinct(posts)
                 .from(posts)
                 .join(postsTags).on(posts.id.eq(postsTags.postsId))
                 .join(tags).on(postsTags.tagsId.eq(tags.id))

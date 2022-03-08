@@ -69,8 +69,6 @@ public class PostsService {
         else {
             postsList = postsRepository.findRecentListByTagSearch(tag, lastPostsId);
         }
-        HashSet<Posts> set = new HashSet<>(postsList);
-        postsList = new ArrayList<>(set);
         return getPostsAllResponseDto(postsList);
     }
 
@@ -83,8 +81,6 @@ public class PostsService {
         else {
             postsList = postsRepository.findPopularListByTagSearch(tag, pageNumber);
         }
-        HashSet<Posts> set = new HashSet<>(postsList);
-        postsList = new ArrayList<>(set);
         return getPostsAllResponseDto(postsList);
 
     }
